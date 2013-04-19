@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:tns="http://com.roskart.dropwizard.jaxws.example.ws/WsdlFirstService"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	name="WsdlFirstService"
+	targetNamespace="http://com.roskart.dropwizard.jaxws.example.ws/WsdlFirstService">
+	
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://com.roskart.dropwizard.jaxws.example.ws/WsdlFirstService">
+      
+      <xsd:element name="Echo" type="tns:Echo">
+      </xsd:element>
+      <xsd:element name="EchoResponse" type="tns:EchoResponse">
+      </xsd:element>
+
+      <xsd:complexType name="Echo">
+      	<xsd:sequence>
+      		<xsd:element name="value" type="xsd:string"></xsd:element>
+      	</xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:complexType name="EchoResponse">
+      	<xsd:sequence>
+            <xsd:element name="value" type="xsd:string"></xsd:element>
+      	</xsd:sequence>
+      </xsd:complexType>
+
+    </xsd:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="EchoRequest">
+  	<wsdl:part name="parameters" element="tns:Echo"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="EchoResponse">
+  	<wsdl:part name="parameters" element="tns:EchoResponse"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:portType name="WsdlFirstService">
+    <wsdl:operation name="echo">
+    	<wsdl:input message="tns:EchoRequest"></wsdl:input>
+    	<wsdl:output message="tns:EchoResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  
+  <wsdl:binding name="WsdlFirstServiceSOAP" type="tns:WsdlFirstService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="echo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  
+  <wsdl:service name="WsdlFirstService">
+    <wsdl:port binding="tns:WsdlFirstServiceSOAP" name="WsdlFirstServiceSOAP">
+      <soap:address location="http://localhost:8080/soap/wsdlfirst"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

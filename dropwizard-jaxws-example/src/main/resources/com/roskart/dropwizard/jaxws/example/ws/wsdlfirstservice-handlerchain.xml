@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jws:handler-chains xmlns:jws="http://java.sun.com/xml/ns/javaee" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <jws:handler-chain>
+        <jws:handler>
+            <jws:handler-class>com.roskart.dropwizard.jaxws.example.ws.WsdlFirstServiceHandler</jws:handler-class>
+        </jws:handler>
+    </jws:handler-chain>
+</jws:handler-chains>
