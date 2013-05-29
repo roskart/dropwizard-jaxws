@@ -80,7 +80,7 @@ public class JAXWSEnvironment {
             String endpoints = "";
             for (Server s : sr.getServers()) {
                 endpoints += "    " + this.defaultPath +  s.getEndpoint().getEndpointInfo().getAddress() +
-                        " (" + s.getEndpoint().getEndpointInfo().getInterface().getName() + " )" + "\n";
+                        " (" + s.getEndpoint().getEndpointInfo().getInterface().getName() + ")\n";
             }
             log.info("The following JAX-WS service endpoints were registered:\n\n" + endpoints);
         }
