@@ -80,7 +80,7 @@ public class JAXWSEnvironment {
             String endpoints = "";
             for (Server s : sr.getServers()) {
                 endpoints += "    " + this.defaultPath +  s.getEndpoint().getEndpointInfo().getAddress() +
-                        " (" + s.getEndpoint().getEndpointInfo().getInterface().getName() + " )" + "\n";
+                        " (" + s.getEndpoint().getEndpointInfo().getInterface().getName() + ")\n";
             }
             log.info("The following JAX-WS service endpoints were registered:\n\n" + endpoints);
         }
@@ -120,9 +120,9 @@ public class JAXWSEnvironment {
         ServerRegistry sr = bus.getExtension(org.apache.cxf.endpoint.ServerRegistry.class);
 
         for (Server s : sr.getServers()) {
-            Class endpointclass = ((Class)s.getEndpoint().getService().get("endpoint.class"));
-            if (service.getClass().getName().equals(endpointclass.getName()) ||
-                 (endpointclass.isInterface() && endpointclass.isAssignableFrom(service.getClass()))) {
+            Class<?> endpointClass = ((Class)s.getEndpoint().getService().get("endpoint.class"));
+            if (service.getClass().getName().equals(endpointClass.getName()) ||
+                 (endpointClass.isInterface() && endpointClass.isAssignableFrom(service.getClass()))) {
                 cxfendpoint = s.getEndpoint();
                 break;
             }
@@ -169,7 +169,7 @@ public class JAXWSEnvironment {
             proxyFactory.getHandlers().add(h);
         }
 
-        T proxy = (T)proxyFactory.create();
+        T proxy = serviceClass.cast(proxyFactory.create());
 
         HTTPConduit http = (HTTPConduit)ClientProxy.getClient(proxy).getConduit();
         HTTPClientPolicy client = http.getClient();
@@ -179,7 +179,7 @@ public class JAXWSEnvironment {
         //TODO: configurable receive timeout
         client.setReceiveTimeout(2000);
 
-        return (T)proxy;
+        return proxy;
     }
 
 }

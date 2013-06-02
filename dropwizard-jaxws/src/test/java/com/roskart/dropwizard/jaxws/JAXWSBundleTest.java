@@ -108,7 +108,7 @@ public class JAXWSBundleTest {
     public void getClient() {
         JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
 
-        Class cls = Object.class;
+        Class<?> cls = Object.class;
         String url = "http://foo";
 
 
