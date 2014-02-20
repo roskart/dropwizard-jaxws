@@ -1,6 +1,6 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.hibernate.UnitOfWork;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.model.BindingOperationInfo;

@@ -1,15 +1,14 @@
 package com.roskart.dropwizard.jaxws;
 
 import com.google.common.collect.ImmutableMap;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Timer;
-import com.yammer.metrics.core.TimerContext;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.Timer;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.service.invoker.Invoker;
 
 /**
  * Provides instrumented CXF invoker implementations.
- * @see com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchProvider
+ * @see com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchProvider
  */
 public class InstrumentedInvokers {
 
@@ -32,7 +31,7 @@ public class InstrumentedInvokers {
 
             if (timers.containsKey(methodname)) {
                 Timer timer = timers.get(methodname);
-                final TimerContext context = timer.time();
+                final Timer.Context context = timer.time();
                 try {
                     result = this.underlying.invoke(exchange, o);
                 }

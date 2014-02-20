@@ -1,26 +1,26 @@
 package com.roskart.dropwizard.jaxws;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.collect.ImmutableMap;
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.Timer;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.Timer;
 import org.apache.cxf.service.invoker.Invoker;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Provides factory method for creating instrumented CXF invoker chain.
  * @see com.roskart.dropwizard.jaxws.InstrumentedInvokers
- * @see com.yammer.metrics.jersey.InstrumentedResourceMethodDispatchProvider
+ * @see com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchProvider
  */
 public class InstrumentedInvokerFactory {
+
+    private final MetricRegistry metricRegistry;
 
     /**
      * Factory method for TimedInvoker.
@@ -30,18 +30,9 @@ public class InstrumentedInvokerFactory {
         ImmutableMap.Builder<String, Timer> timers = new ImmutableMap.Builder<String, Timer>();
 
         for (Method m : timedMethods) {
-
             Timed annotation = m.getAnnotation(Timed.class);
-
-            MetricName metricname = new MetricName(
-                    MetricName.chooseGroup(annotation.group(), m.getDeclaringClass()),
-                    MetricName.chooseType(annotation.type(), m.getDeclaringClass()),
-                    MetricName.chooseName(annotation.name(), m));
-
-            Timer timer = Metrics.newTimer(metricname,
-                    annotation.durationUnit() == null ? TimeUnit.MILLISECONDS : annotation.durationUnit(),
-                    annotation.rateUnit() == null ? TimeUnit.SECONDS : annotation.rateUnit());
-
+            final String name = chooseName(annotation.name(), annotation.absolute(), m);
+            Timer timer = metricRegistry.timer(name);
             timers.put(m.getName(), timer);
         }
 
@@ -56,18 +47,9 @@ public class InstrumentedInvokerFactory {
         ImmutableMap.Builder<String, Meter> meters = new ImmutableMap.Builder<String, Meter>();
 
         for (Method m : meteredMethods) {
-
             Metered annotation = m.getAnnotation(Metered.class);
-
-            MetricName metricname = new MetricName(
-                    MetricName.chooseGroup(annotation.group(), m.getDeclaringClass()),
-                    MetricName.chooseType(annotation.type(), m.getDeclaringClass()),
-                    MetricName.chooseName(annotation.name(), m));
-
-            Meter meter = Metrics.newMeter(metricname,
-                    annotation.eventType() == null ? "requests" : annotation.eventType(),
-                    annotation.rateUnit() == null ? TimeUnit.SECONDS : annotation.rateUnit());
-
+            final String name = chooseName(annotation.name(), annotation.absolute(), m);
+            Meter meter = metricRegistry.meter(name);
             meters.put(m.getName(), meter);
         }
 
@@ -85,22 +67,39 @@ public class InstrumentedInvokerFactory {
         for (Method m : meteredMethods) {
 
             ExceptionMetered annotation = m.getAnnotation(ExceptionMetered.class);
-
-            MetricName metricname = new MetricName(
-                    MetricName.chooseGroup(annotation.group(), m.getDeclaringClass()),
-                    MetricName.chooseType(annotation.type(), m.getDeclaringClass()),
-                    annotation.name() == null || annotation.name().equals("") ?
-                        m.getName() + ExceptionMetered.DEFAULT_NAME_SUFFIX : annotation.name());
-
-            Meter meter = Metrics.newMeter(metricname,
-                    annotation.eventType() == null ? "requests" : annotation.eventType(),
-                    annotation.rateUnit() == null ? TimeUnit.SECONDS : annotation.rateUnit());
-
+            final String name = chooseName(
+                    annotation.name(),
+                    annotation.absolute(),
+                    m,
+                    ExceptionMetered.DEFAULT_NAME_SUFFIX);
+            Meter meter = metricRegistry.meter(name);
             meters.put(m.getName(), new InstrumentedInvokers.ExceptionMeter(meter, annotation.cause()));
         }
 
         return new InstrumentedInvokers.ExceptionMeteredInvoker(invoker, meters.build());
     }
+
+    /* Based on com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchProvider#chooseName */
+    private String chooseName(String explicitName, boolean absolute, Method method, String... suffixes) {
+        if (explicitName != null && !explicitName.isEmpty()) {
+            if (absolute) {
+                return explicitName;
+            }
+            return metricRegistry.name(method.getDeclaringClass(), explicitName);
+        }
+        return metricRegistry.name(metricRegistry.name(method.getDeclaringClass(),
+                method.getName()),
+                suffixes);
+    }
+
+    /**
+     *
+     * @param metricRegistry
+     */
+    public InstrumentedInvokerFactory(MetricRegistry metricRegistry) {
+        this.metricRegistry =  metricRegistry;
+    }
+
 
     /**
      * Factory method for creating instrumented invoker chain.

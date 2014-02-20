@@ -1,6 +1,5 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.dropwizard.validation.Validator;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.endpoint.Server;
@@ -16,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServlet;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 
@@ -30,7 +32,7 @@ public class JAXWSEnvironment {
 
     protected final Bus bus;
     protected final String defaultPath;
-    private InstrumentedInvokerFactory instrumentedInvokerBuilder = new InstrumentedInvokerFactory();
+    private InstrumentedInvokerFactory instrumentedInvokerBuilder;
     private UnitOfWorkInvokerFactory unitOfWorkInvokerBuilder = new UnitOfWorkInvokerFactory();
 
     public String getDefaultPath() {
@@ -48,7 +50,6 @@ public class JAXWSEnvironment {
         */
         System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME, "org.apache.cxf.bus.CXFBusFactory");
         this.bus = BusFactory.newInstance().createBus();
-
         this.defaultPath = defaultPath.replace("/*", "");
     }
 
@@ -70,8 +71,8 @@ public class JAXWSEnvironment {
         return new BasicAuthenticationInterceptor();
     }
 
-    protected ValidatingInvoker createValidatingInvoker(Invoker invoker) {
-        return new ValidatingInvoker(invoker, new Validator());
+    protected ValidatingInvoker createValidatingInvoker(Invoker invoker, Validator validator) {
+        return new ValidatingInvoker(invoker, validator);
     }
 
     public void logEndpoints() {
@@ -136,7 +137,8 @@ public class JAXWSEnvironment {
         Invoker invoker = cxfendpoint.getService().getInvoker();
 
         // validating invoker
-        invoker = this.createValidatingInvoker(invoker);
+        ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
+        invoker = this.createValidatingInvoker(invoker, vf.getValidator());
 
         if (sessionFactory != null) {
             // Add invoker to handle UnitOfWork annotations. Note that this invoker is set up before

@@ -1,6 +1,6 @@
 package com.roskart.dropwizard.jaxws.example.ws;
 
-import com.yammer.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Metered;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.Echo;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.EchoResponse;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;

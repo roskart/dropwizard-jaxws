@@ -1,7 +1,7 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.dropwizard.auth.Authenticator;
-import com.yammer.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.auth.Authenticator;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 public class BasicAuthentication {
 

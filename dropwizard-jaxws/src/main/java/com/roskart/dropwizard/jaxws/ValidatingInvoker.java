@@ -1,23 +1,26 @@
 package com.roskart.dropwizard.jaxws;
 
 import com.google.common.collect.ImmutableList;
-import com.yammer.dropwizard.validation.Validated;
-import com.yammer.dropwizard.validation.Validator;
+import io.dropwizard.validation.Validated;
+import io.dropwizard.validation.ConstraintViolations;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.FaultMode;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.Invoker;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.groups.Default;
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Wraps underlying CXF invoker and performs validation of the service operation parameters.
- * @see com.yammer.dropwizard.jersey.JacksonMessageBodyProvider
+ * @see io.dropwizard.jersey.jackson.JacksonMessageBodyProvider
  */
 public class ValidatingInvoker extends AbstractInvoker {
 
@@ -65,13 +68,20 @@ public class ValidatingInvoker extends AbstractInvoker {
     }
 
     /**
-     * Copied and modified from com.yammer.dropwizard.jersey#JacksonMessageBodyProvider.validate()
+     * Copied and modified from com.yammer.dropwizard.jersey.jackson#JacksonMessageBodyProvider.validate()
+     * Notes on Hibernate Validator:
+     * - when validating object graphs, null references are ignored.
+     * - from version 5 on, Hibernate Validator throws IllegalArgumentException instead of ValidationException
+     *   for null parameter values:
+     *   java.lang.IllegalArgumentException: HV000116: The object to be validated must not be null.
      */
     private Object validate(Annotation[] annotations, Object value) {
         final Class<?>[] classes = findValidationGroups(annotations);
 
         if (classes != null) {
-            final ImmutableList<String> errors = validator.validate(value, classes);
+            final ImmutableList<String> errors = ConstraintViolations.format(
+                    validator.validate(value, classes));
+
             if (!errors.isEmpty()) {
                 String message = "\n";
                 for (String error : errors) {
@@ -85,7 +95,7 @@ public class ValidatingInvoker extends AbstractInvoker {
     }
 
     /**
-     * Copied from com.yammer.dropwizard.jersey.JacksonMessageBodyProvider#findValidationGroups()
+     * Copied from com.yammer.dropwizard.jersey.jackson.JacksonMessageBodyProvider#findValidationGroups()
      */
     private Class<?>[] findValidationGroups(Annotation[] annotations) {
         for (Annotation annotation : annotations) {

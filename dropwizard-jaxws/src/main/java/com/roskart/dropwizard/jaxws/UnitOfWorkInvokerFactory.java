@@ -1,7 +1,7 @@
 package com.roskart.dropwizard.jaxws;
 
 import com.google.common.collect.ImmutableMap;
-import com.yammer.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.hibernate.UnitOfWork;
 import org.apache.cxf.service.invoker.Invoker;
 import org.hibernate.SessionFactory;
 

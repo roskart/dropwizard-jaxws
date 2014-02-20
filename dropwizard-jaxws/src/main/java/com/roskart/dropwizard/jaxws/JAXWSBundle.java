@@ -1,9 +1,9 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.dropwizard.Bundle;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.lifecycle.ServerLifecycleListener;
+import io.dropwizard.Bundle;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.lifecycle.ServerLifecycleListener;
 import org.eclipse.jetty.server.Server;
 import org.hibernate.SessionFactory;
 
@@ -54,6 +54,8 @@ public class JAXWSBundle implements Bundle {
      */
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
+        this.jaxwsEnvironment.setInstrumentedInvokerBuilder(
+                new InstrumentedInvokerFactory(bootstrap.getMetricRegistry()));
     }
 
     /**
@@ -62,8 +64,8 @@ public class JAXWSBundle implements Bundle {
     @Override
     public void run(Environment environment) {
         checkArgument(environment != null, "Environment is null");
-        environment.addServlet(jaxwsEnvironment.buildServlet(), servletPath);
-        environment.addServerLifecycleListener(new ServerLifecycleListener() {
+        environment.servlets().addServlet("CXF Servlet", jaxwsEnvironment.buildServlet()).addMapping(servletPath);
+        environment.lifecycle().addServerLifecycleListener(new ServerLifecycleListener() {
             @Override
             public void serverStarted(Server server) {
                 jaxwsEnvironment.logEndpoints();

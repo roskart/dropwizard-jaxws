@@ -1,8 +1,8 @@
 package com.roskart.dropwizard.jaxws.example.ws;
 
 import com.roskart.dropwizard.jaxws.example.core.User;
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
 
 import javax.annotation.Resource;
 import javax.jws.WebService;

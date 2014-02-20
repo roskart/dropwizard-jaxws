@@ -7,19 +7,19 @@ import com.roskart.dropwizard.jaxws.example.core.Person;
 import com.roskart.dropwizard.jaxws.example.db.PersonDAO;
 import com.roskart.dropwizard.jaxws.example.resources.*;
 import com.roskart.dropwizard.jaxws.example.ws.*;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.db.DatabaseConfiguration;
-import com.yammer.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;
 
-public class JaxWsExampleService extends Service<JaxWsExampleServiceConfiguration> {
+public class JaxWsExampleApplication extends Application<JaxWsExampleApplicationConfiguration> {
 
     // HibernateBundle is used by HibernateExampleService
-    private final HibernateBundle<JaxWsExampleServiceConfiguration> hibernate = new HibernateBundle<JaxWsExampleServiceConfiguration>(Person.class) {
+    private final HibernateBundle<JaxWsExampleApplicationConfiguration> hibernate = new HibernateBundle<JaxWsExampleApplicationConfiguration>(Person.class) {
         @Override
-        public DatabaseConfiguration getDatabaseConfiguration(JaxWsExampleServiceConfiguration configuration) {
+        public DataSourceFactory getDataSourceFactory(JaxWsExampleApplicationConfiguration configuration) {
             return configuration.getDatabaseConfiguration();
         }
     };
@@ -28,18 +28,17 @@ public class JaxWsExampleService extends Service<JaxWsExampleServiceConfiguratio
     private JAXWSBundle jaxWsBundle = new JAXWSBundle();
 
     public static void main(String[] args) throws Exception {
-        new JaxWsExampleService().run(args);
+        new JaxWsExampleApplication().run(args);
     }
 
     @Override
-    public void initialize(Bootstrap<JaxWsExampleServiceConfiguration> bootstrap) {
-        bootstrap.setName("dropwizard-jaxws-example");
+    public void initialize(Bootstrap<JaxWsExampleApplicationConfiguration> bootstrap) {
         bootstrap.addBundle(hibernate);
         bootstrap.addBundle(jaxWsBundle);
     }
 
     @Override
-    public void run(JaxWsExampleServiceConfiguration jaxWsExampleServiceConfiguration, Environment environment) throws Exception {
+    public void run(JaxWsExampleApplicationConfiguration jaxWsExampleApplicationConfiguration, Environment environment) throws Exception {
 
         // Hello world service
         jaxWsBundle.publishEndpoint("/simple", new SimpleService());
@@ -57,14 +56,14 @@ public class JaxWsExampleService extends Service<JaxWsExampleServiceConfiguratio
                 hibernate.getSessionFactory());
 
         // RESTful resource that invokes WsdlFirstService on localhost and uses client side JAX-WS handler.
-        environment.addResource(new AccessWsdlFirstServiceResource(
+        environment.jersey().register(new AccessWsdlFirstServiceResource(
                 jaxWsBundle.getClient(
                         WsdlFirstService.class,
                         "http://localhost:8080/soap/wsdlfirst",
                         new WsdlFirstClientHandler())));
 
         // RESTful resource that invokes JavaFirstService on localhost and uses basic authentication.
-        environment.addResource(new AccessProtectedServiceResource(
+        environment.jersey().register(new AccessProtectedServiceResource(
                 jaxWsBundle.getClient(
                         JavaFirstService.class,
                         "http://localhost:8080/soap/javafirst"

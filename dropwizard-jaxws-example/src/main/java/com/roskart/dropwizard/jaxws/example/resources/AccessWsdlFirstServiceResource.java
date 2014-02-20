@@ -1,6 +1,6 @@
 package com.roskart.dropwizard.jaxws.example.resources;
 
-import com.yammer.metrics.annotation.Timed;
+import com.codahale.metrics.annotation.Timed;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.Echo;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.EchoResponse;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.ObjectFactory;

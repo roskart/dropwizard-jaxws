@@ -2,7 +2,7 @@ package com.roskart.dropwizard.jaxws.example.db;
 
 import com.google.common.base.Optional;
 import com.roskart.dropwizard.jaxws.example.core.Person;
-import com.yammer.dropwizard.hibernate.AbstractDAO;
+import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

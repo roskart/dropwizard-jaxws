@@ -1,6 +1,6 @@
 package com.roskart.dropwizard.jaxws.example.ws;
 
-import com.yammer.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Metered;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;

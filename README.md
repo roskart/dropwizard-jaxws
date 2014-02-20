@@ -29,25 +29,24 @@ Hello World
             }
         }
 
-**Dropwizard service:**
+**Dropwizard application:**
 
-        public class MyService extends Service<MyServiceConfiguration> {
+        public class MyApplication extends Application<MyApplicationConfiguration> {
 
             private JAXWSBundle jaxWsBundle = new JAXWSBundle();
 
             @Override
-            public void initialize(Bootstrap<MyServiceConfiguration> bootstrap) {
-                bootstrap.setName("MyService");
+            public void initialize(Bootstrap<MyApplicationConfiguration> bootstrap) {
                 bootstrap.addBundle(jaxWsBundle);
             }
 
             @Override
-            public void run(MyServiceConfiguration configuration, Environment environment) throws Exception {
+            public void run(MyApplicationConfiguration configuration, Environment environment) throws Exception {
                 jaxWsBundle.publishEndpoint("/hello", new HelloWorldSOAP());
             }
 
             public static void main(String[] args) throws Exception {
-                new MyService().run(args);
+                new MyApplication().run(args);
             }
         }
 
@@ -61,8 +60,8 @@ Using HelloWorldSOAP web service client:
 
 Examples
 --------
-Module `dropwizard-jaxws-example` contains Dropwizard service (`JaxWsExampleService`) with the following SOAP web
-services and RESTful resources:
+Module `dropwizard-jaxws-example` contains Dropwizard application (`JaxWsExampleApplication`) with the following SOAP
+web services and RESTful resources:
 
 * **SimpleService**: A minimal 'hello world' example.
 
@@ -94,14 +93,14 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.1.0.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.2.0.jar server dropwizard-jaxws-example\config.yaml
 
 To use dropwizard-jaxws in your project, add the following dependency to `pom.xml`:
 
         <dependency>
             <groupId>com.roskart.dropwizard</groupId>
             <artifactId>dropwizard-jaxws</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
 Notes
@@ -120,4 +119,16 @@ For example on building fat jar, see `dropwizard-jaxws-example/pom.xml`.
 
 License
 -------
-Apache Software License 2.0, see LICENSE.
+Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard-jaxws/blob/master/LICENSE).
+
+Changelog
+---------
+
+### v0.2.0
+
+- Upgraded to Dropwizard 0.7.0.
+- Upgraded to CXF 2.7.8.
+
+### v0.1.0
+
+- Initial Release (uses Dropwizard 0.6.2).

@@ -1,8 +1,7 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.dropwizard.validation.Validated;
-import com.yammer.dropwizard.validation.ValidationMethod;
-import com.yammer.dropwizard.validation.Validator;
+import io.dropwizard.validation.Validated;
+import io.dropwizard.validation.ValidationMethod;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.invoker.Invoker;
@@ -12,6 +11,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 
@@ -72,7 +73,7 @@ public class ValidatingInvokerTest {
     @Before
     public void setup() {
         underlying = mock(Invoker.class);
-        invoker = new ValidatingInvoker(underlying, new Validator());
+        invoker = new ValidatingInvoker(underlying, Validation.buildDefaultValidatorFactory().getValidator());
         exchange = mock(Exchange.class);
         when(exchange.getInMessage()).thenReturn(mock(Message.class));
         BindingOperationInfo boi = mock(BindingOperationInfo.class);
@@ -119,20 +120,10 @@ public class ValidatingInvokerTest {
     @Test
     public void invokeWithValidation() {
 
-        // Note that when validating object graphs, null references are ignored.
         setTargetMethod(exchange, "withValidation", RootParam1.class, RootParam2.class);
 
-        List<Object> params = Arrays.asList(null, null);
+        List<Object> params = Arrays.asList(new RootParam1(new ChildParam("")), new RootParam2("ok"));
 
-        try {
-            invoker.invoke(exchange, params);
-            verify(underlying).invoke(exchange, params);
-        }
-        catch(Exception e) {
-            assertThat(e, is(instanceOf(ValidationException.class)));
-        }
-
-        params = Arrays.asList(new RootParam1(new ChildParam("")), new RootParam2("ok"));
         try {
             invoker.invoke(exchange, params);
             fail();

@@ -1,7 +1,7 @@
 package com.roskart.dropwizard.jaxws;
 
 import com.google.common.collect.ImmutableMap;
-import com.yammer.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.hibernate.UnitOfWork;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.service.invoker.Invoker;
 import org.hibernate.Session;
@@ -11,7 +11,7 @@ import org.hibernate.context.internal.ManagedSessionContext;
 
 /**
  * Wraps underlying invoker in a Hibernate session.
- * @see com.yammer.dropwizard.hibernate.UnitOfWorkRequestDispatcher
+ * @see io.dropwizard.hibernate.UnitOfWorkRequestDispatcher
  */
 public class UnitOfWorkInvoker extends AbstractInvoker {
 

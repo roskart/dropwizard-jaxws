@@ -1,13 +1,21 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.lifecycle.ServerLifecycleListener;
+import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.lifecycle.ServerLifecycleListener;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.jetty.setup.ServletEnvironment;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServlet;
 import javax.xml.ws.handler.Handler;
+
+import java.util.EventListener;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -17,10 +25,18 @@ import static org.mockito.Mockito.*;
 public class JAXWSBundleTest {
 
     Environment environment = mock(Environment.class);
+    Bootstrap bootstrap = mock(Bootstrap.class);
+    ServletEnvironment servletEnvironment = mock(ServletEnvironment.class);
+    ServletRegistration.Dynamic servlet = mock(ServletRegistration.Dynamic.class);
     JAXWSEnvironment jaxwsEnvironment = mock(JAXWSEnvironment.class);
+    LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
 
     @Before
     public void setUp() {
+        when(environment.servlets()).thenReturn(servletEnvironment);
+        when(environment.lifecycle()).thenReturn(lifecycleEnvironment);
+        when(bootstrap.getMetricRegistry()).thenReturn(mock(MetricRegistry.class));
+        when(servletEnvironment.addServlet(anyString(), any(HttpServlet.class))).thenReturn(servlet);
         when(jaxwsEnvironment.buildServlet()).thenReturn(mock(HttpServlet.class));
         when(jaxwsEnvironment.getDefaultPath()).thenReturn("/soap");
     }
@@ -45,7 +61,7 @@ public class JAXWSBundleTest {
     }
 
     @Test
-    public void run() {
+    public void initializeAndRun() {
         JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
 
         try {
@@ -55,9 +71,13 @@ public class JAXWSBundleTest {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
+        jaxwsBundle.initialize(bootstrap);
+        verify(jaxwsEnvironment).setInstrumentedInvokerBuilder(any(InstrumentedInvokerFactory.class));
+
         jaxwsBundle.run(environment);
-        verify(environment).addServlet(any(HttpServlet.class), eq("/soap/*"));
-        verify(environment).addServerLifecycleListener(any(ServerLifecycleListener.class));
+        verify(servletEnvironment).addServlet(eq("CXF Servlet"), any(Servlet.class));
+        verify(lifecycleEnvironment).addServerLifecycleListener(any(ServerLifecycleListener.class));
+        verify(servlet).addMapping("/soap/*");
     }
 
     @Test

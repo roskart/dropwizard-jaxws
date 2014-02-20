@@ -1,11 +1,11 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.annotation.ExceptionMetered;
-import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.annotation.Timed;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Timer;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.Timer;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.model.BindingOperationInfo;
@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -50,6 +49,8 @@ public class InstrumentedInvokerFactoryTest {
         }
     }
 
+    MetricRegistry testMetricRegistry;
+    MetricRegistry mockMetricRegistry;
     InstrumentedInvokerFactory invokerBuilder;
     InstrumentedService instrumentedService;
     // CXF Exchange contains message exchange and is used by Invoker to obtain invoked method name
@@ -115,18 +116,23 @@ public class InstrumentedInvokerFactoryTest {
         OperationInfo oi = mock(OperationInfo.class);
         when(boi.getOperationInfo()).thenReturn(oi);
 
-        invokerBuilder = new InstrumentedInvokerFactory();
+        testMetricRegistry = new MetricRegistry();
+        mockMetricRegistry = mock(MetricRegistry.class);
+
+        invokerBuilder = new InstrumentedInvokerFactory(mockMetricRegistry);
         instrumentedService = new InstrumentedService();
     }
 
     @Test
     public void noAnnotation() {
 
-        Timer timer = Metrics.newTimer(InstrumentedService.class, "timed");
-        Meter meter = Metrics.newMeter(InstrumentedService.class, "metered", "", TimeUnit.SECONDS);
+        Timer timer = testMetricRegistry.timer("timed");
+        Meter meter = testMetricRegistry.meter("metered");
+        when(mockMetricRegistry.timer(anyString())).thenReturn(timer);
+        when(mockMetricRegistry.meter(anyString())).thenReturn(meter);
 
-        long oldtimervalue = timer.count();
-        long oldmetervalue = meter.count();
+        long oldtimervalue = timer.getCount();
+        long oldmetervalue = meter.getCount();
 
         Invoker invoker = invokerBuilder.create(instrumentedService, new FooInvoker());
         this.setTargetMethod(exchange, "foo"); // simulate CXF behavior
@@ -134,18 +140,20 @@ public class InstrumentedInvokerFactoryTest {
         Object result = invoker.invoke(exchange, null);
         assertEquals("fooReturn", result);
 
-        assertThat(timer.count(), is(oldtimervalue));
-        assertThat(meter.count(), is(oldmetervalue));
+        assertThat(timer.getCount(), is(oldtimervalue));
+        assertThat(meter.getCount(), is(oldmetervalue));
     }
 
     @Test
     public void meteredAnnotation() {
 
-        Timer timer = Metrics.newTimer(InstrumentedService.class, "timed");
-        Meter meter = Metrics.newMeter(InstrumentedService.class, "metered", "", TimeUnit.SECONDS);
+        Timer timer = testMetricRegistry.timer("timed");
+        Meter meter = testMetricRegistry.meter("metered");
+        when(mockMetricRegistry.timer(anyString())).thenReturn(timer);
+        when(mockMetricRegistry.meter(anyString())).thenReturn(meter);
 
-        long oldtimervalue = timer.count();
-        long oldmetervalue = meter.count();
+        long oldtimervalue = timer.getCount();
+        long oldmetervalue = meter.getCount();
 
         Invoker invoker = invokerBuilder.create(instrumentedService, new MeteredInvoker());
         this.setTargetMethod(exchange, "metered"); // simulate CXF behavior
@@ -153,18 +161,20 @@ public class InstrumentedInvokerFactoryTest {
         Object result = invoker.invoke(exchange, null);
         assertEquals("meteredReturn", result);
 
-        assertThat(timer.count(), is(oldtimervalue));
-        assertThat(meter.count(), is(1 + oldmetervalue));
+        assertThat(timer.getCount(), is(oldtimervalue));
+        assertThat(meter.getCount(), is(1 + oldmetervalue));
     }
 
     @Test
     public void timedAnnotation() {
 
-        Timer timer = Metrics.newTimer(InstrumentedService.class, "timed");
-        Meter meter = Metrics.newMeter(InstrumentedService.class, "metered", "", TimeUnit.SECONDS);
+        Timer timer = testMetricRegistry.timer("timed");
+        Meter meter = testMetricRegistry.meter("metered");
+        when(mockMetricRegistry.timer(anyString())).thenReturn(timer);
+        when(mockMetricRegistry.meter(anyString())).thenReturn(meter);
 
-        long oldtimervalue = timer.count();
-        long oldmetervalue = meter.count();
+        long oldtimervalue = timer.getCount();
+        long oldmetervalue = meter.getCount();
 
         Invoker invoker = invokerBuilder.create(instrumentedService, new TimedInvoker());
         this.setTargetMethod(exchange, "timed"); // simulate CXF behavior
@@ -172,20 +182,23 @@ public class InstrumentedInvokerFactoryTest {
         Object result = invoker.invoke(exchange, null);
         assertEquals("timedReturn", result);
 
-        assertThat(timer.count(), is(1 + oldtimervalue));
-        assertThat(meter.count(), is(oldmetervalue));
+        assertThat(timer.getCount(), is(1 + oldtimervalue));
+        assertThat(meter.getCount(), is(oldmetervalue));
     }
 
     @Test
     public void exceptionMeteredAnnotation() {
 
-        Timer timer = Metrics.newTimer(InstrumentedService.class, "timed");
-        Meter meter = Metrics.newMeter(InstrumentedService.class, "metered", "", TimeUnit.SECONDS);
-        Meter exceptionmeter = Metrics.newMeter(InstrumentedService.class, "exceptionMeteredExceptions", "", TimeUnit.SECONDS);
+        Timer timer = testMetricRegistry.timer("timed");
+        Meter meter = testMetricRegistry.meter("metered");
+        Meter exceptionmeter = testMetricRegistry.meter("exceptionMeteredExceptions");
+        when(mockMetricRegistry.timer(anyString())).thenReturn(timer);
+        when(mockMetricRegistry.meter(contains("metered"))).thenReturn(meter);
+        when(mockMetricRegistry.meter(contains("exceptionMetered"))).thenReturn(exceptionmeter);
 
-        long oldtimervalue = timer.count();
-        long oldmetervalue = meter.count();
-        long oldexceptionmetervalue = exceptionmeter.count();
+        long oldtimervalue = timer.getCount();
+        long oldmetervalue = meter.getCount();
+        long oldexceptionmetervalue = exceptionmeter.getCount();
 
         // Invoke InstrumentedResource.exceptionMetered without exception beeing thrown
 
@@ -195,9 +208,9 @@ public class InstrumentedInvokerFactoryTest {
         Object result = invoker.invoke(exchange, null);
         assertEquals("exceptionMeteredReturn", result);
 
-        assertThat(timer.count(), is(oldtimervalue));
-        assertThat(meter.count(), is(oldmetervalue));
-        assertThat(exceptionmeter.count(), is(oldexceptionmetervalue));
+        assertThat(timer.getCount(), is(oldtimervalue));
+        assertThat(meter.getCount(), is(oldmetervalue));
+        assertThat(exceptionmeter.getCount(), is(oldexceptionmetervalue));
 
         // Invoke InstrumentedResource.exceptionMetered with exception beeing thrown
 
@@ -211,9 +224,9 @@ public class InstrumentedInvokerFactoryTest {
             assertThat(e, is(instanceOf(RuntimeException.class)));
         }
 
-        assertThat(timer.count(), is(oldtimervalue));
-        assertThat(meter.count(), is(oldmetervalue));
-        assertThat(exceptionmeter.count(), is(1 + oldexceptionmetervalue));
+        assertThat(timer.getCount(), is(oldtimervalue));
+        assertThat(meter.getCount(), is(oldmetervalue));
+        assertThat(exceptionmeter.getCount(), is(1 + oldexceptionmetervalue));
 
     }
 

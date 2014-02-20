@@ -3,7 +3,7 @@ package com.roskart.dropwizard.jaxws.example.ws;
 import com.google.common.base.Optional;
 import com.roskart.dropwizard.jaxws.example.core.Person;
 import com.roskart.dropwizard.jaxws.example.db.PersonDAO;
-import com.yammer.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;

@@ -21,19 +21,19 @@
         </dependency>
 
         <dependency>
-            <groupId>com.yammer.dropwizard</groupId>
+            <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.yammer.dropwizard</groupId>
+            <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-auth</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.yammer.dropwizard</groupId>
+            <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-hibernate</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
@@ -77,7 +77,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.0</version>
                 <configuration>
-                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
@@ -99,7 +99,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.roskart.dropwizard.jaxws.example.JaxWsExampleService</mainClass>
+                                    <mainClass>com.roskart.dropwizard.jaxws.example.JaxWsExampleApplication</mainClass>
                                 </transformer>
 
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
