@@ -15,7 +15,7 @@ public class UnitOfWorkInvokerFactory {
     public Invoker create(Object service, Invoker rootInvoker, SessionFactory sessionFactory) {
 
         ImmutableMap.Builder<String, UnitOfWork> unitOfWorkMethodsBuilder =
-                new ImmutableMap.Builder<String, UnitOfWork>();
+                new ImmutableMap.Builder<>();
 
         for (Method m : service.getClass().getMethods()) {
             if (m.isAnnotationPresent(UnitOfWork.class)) {

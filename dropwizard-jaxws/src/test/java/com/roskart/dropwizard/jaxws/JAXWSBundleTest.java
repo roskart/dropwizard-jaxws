@@ -6,16 +6,12 @@ import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
-import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServlet;
-import javax.xml.ws.handler.Handler;
-
-import java.util.EventListener;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -82,10 +78,11 @@ public class JAXWSBundleTest {
 
     @Test
     public void publishEndpoint() {
+
         JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
         Object service = new Object();
         try {
-            jaxwsBundle.publishEndpoint("foo", null);
+            jaxwsBundle.publishEndpoint(new EndpointBuilder("foo", null));
             fail();
         }
 
@@ -94,7 +91,7 @@ public class JAXWSBundleTest {
         }
 
         try {
-            jaxwsBundle.publishEndpoint(null, service);
+            jaxwsBundle.publishEndpoint(new EndpointBuilder(null, service));
             fail();
         }
         catch (Exception e) {
@@ -102,38 +99,28 @@ public class JAXWSBundleTest {
         }
 
         try {
-            jaxwsBundle.publishEndpoint("   ", service);
+            jaxwsBundle.publishEndpoint(new EndpointBuilder("   ", service));
             fail();
         }
         catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
-        jaxwsBundle.publishEndpoint("foo", service);
-        verify(jaxwsEnvironment).publishEndpoint("foo", service, null, null);
-
-        BasicAuthentication auth = mock(BasicAuthentication.class);
-        jaxwsBundle.publishEndpoint("boo", service, auth);
-        verify(jaxwsEnvironment).publishEndpoint("boo", service, auth, null);
-
-        SessionFactory sessionFactory = mock(SessionFactory.class);
-        jaxwsBundle.publishEndpoint("boo", service, auth, sessionFactory);
-        verify(jaxwsEnvironment).publishEndpoint("boo", service, auth, sessionFactory);
-
-        jaxwsBundle.publishEndpoint("boo", service, sessionFactory);
-        verify(jaxwsEnvironment).publishEndpoint("boo", service, null, sessionFactory);
+        EndpointBuilder builder = mock(EndpointBuilder.class);
+        jaxwsBundle.publishEndpoint(builder);
+        verify(jaxwsEnvironment).publishEndpoint(builder);
     }
 
     @Test
     public void getClient() {
+
         JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
 
         Class<?> cls = Object.class;
         String url = "http://foo";
 
-
         try {
-            jaxwsBundle.getClient(null, null);
+            jaxwsBundle.getClient(new ClientBuilder<>(null, null));
             fail();
         }
 
@@ -142,7 +129,7 @@ public class JAXWSBundleTest {
         }
 
         try {
-            jaxwsBundle.getClient(null, url);
+            jaxwsBundle.getClient(new ClientBuilder<>(null, url));
             fail();
         }
         catch (Exception e) {
@@ -150,19 +137,15 @@ public class JAXWSBundleTest {
         }
 
         try {
-            jaxwsBundle.getClient(cls, "   ");
+            jaxwsBundle.getClient(new ClientBuilder<>(cls, "   "));
             fail();
         }
         catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
-        jaxwsBundle.getClient(cls, url);
-        verify(jaxwsEnvironment).getClient(cls, url);
-
-        Handler mockHandler = mock(Handler.class);
-        jaxwsBundle.getClient(cls, url, mockHandler);
-        verify(jaxwsEnvironment).getClient(cls, url, mockHandler);
+        ClientBuilder builder = new ClientBuilder<>(cls, url);
+        jaxwsBundle.getClient(builder);
+        verify(jaxwsEnvironment).getClient(builder);
     }
-
 }

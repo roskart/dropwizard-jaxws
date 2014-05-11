@@ -27,7 +27,7 @@ public class InstrumentedInvokerFactory {
      */
     private Invoker timed(Invoker invoker, List<Method> timedMethods) {
 
-        ImmutableMap.Builder<String, Timer> timers = new ImmutableMap.Builder<String, Timer>();
+        ImmutableMap.Builder<String, Timer> timers = new ImmutableMap.Builder<>();
 
         for (Method m : timedMethods) {
             Timed annotation = m.getAnnotation(Timed.class);
@@ -44,7 +44,7 @@ public class InstrumentedInvokerFactory {
      */
     private Invoker metered(Invoker invoker, List<Method> meteredMethods) {
 
-        ImmutableMap.Builder<String, Meter> meters = new ImmutableMap.Builder<String, Meter>();
+        ImmutableMap.Builder<String, Meter> meters = new ImmutableMap.Builder<>();
 
         for (Method m : meteredMethods) {
             Metered annotation = m.getAnnotation(Metered.class);
@@ -62,7 +62,7 @@ public class InstrumentedInvokerFactory {
     private Invoker exceptionMetered(Invoker invoker, List<Method> meteredMethods) {
 
         ImmutableMap.Builder<String, InstrumentedInvokers.ExceptionMeter> meters =
-                new ImmutableMap.Builder<String, InstrumentedInvokers.ExceptionMeter>();
+                new ImmutableMap.Builder<>();
 
         for (Method m : meteredMethods) {
 
@@ -94,7 +94,7 @@ public class InstrumentedInvokerFactory {
 
     /**
      *
-     * @param metricRegistry
+     * @param metricRegistry Metric registry.
      */
     public InstrumentedInvokerFactory(MetricRegistry metricRegistry) {
         this.metricRegistry =  metricRegistry;
@@ -106,9 +106,9 @@ public class InstrumentedInvokerFactory {
      */
     public Invoker create(Object service, Invoker rootInvoker) {
 
-        List<Method> timedmethods = new ArrayList<Method>();
-        List<Method> meteredmethods = new ArrayList<Method>();
-        List<Method> exceptionmeteredmethods = new ArrayList<Method>();
+        List<Method> timedmethods = new ArrayList<>();
+        List<Method> meteredmethods = new ArrayList<>();
+        List<Method> exceptionmeteredmethods = new ArrayList<>();
 
         for (Method m : service.getClass().getMethods()) {
 

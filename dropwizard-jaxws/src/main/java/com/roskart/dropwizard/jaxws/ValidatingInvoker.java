@@ -9,14 +9,12 @@ import org.apache.cxf.message.FaultMode;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.Invoker;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.groups.Default;
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Wraps underlying CXF invoker and performs validation of the service operation parameters.

@@ -10,7 +10,6 @@ import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,31 +89,13 @@ public class JAXWSEnvironment {
         }
     }
 
-    /* Publish JAX-WS endpoints */
+    /**
+     * Publish JAX-WS server side endpoint.
+     */
+    public void publishEndpoint(EndpointBuilder endpointBuilder) {
+        checkArgument(endpointBuilder != null, "EndpointBuilder is null");
 
-    public void publishEndpoint(String path, Object service) {
-        this.publishEndpoint(path, service, null, null);
-    }
-
-    public void publishEndpoint(String path, Object service, SessionFactory sessionFactory) {
-        this.publishEndpoint(path, service, null, sessionFactory);
-    }
-
-    public void publishEndpoint(String path, Object service, BasicAuthentication authentication) {
-        this.publishEndpoint(path, service, authentication, null);
-    }
-
-    public void publishEndpoint(String path, Object service,
-                                BasicAuthentication authentication, SessionFactory sessionFactory) {
-
-        checkArgument(service != null, "Service is null");
-        checkArgument(path != null, "Path is null");
-        checkArgument((path).trim().length() > 0, "Path is empty");
-        if (!path.startsWith("local:")) { // local transport is used in tests
-            path = (path.startsWith("/")) ? path : "/" + path;
-        }
-
-        Endpoint.publish(path, service);
+        Endpoint.publish(endpointBuilder.getPath(), endpointBuilder.getService());
 
         org.apache.cxf.endpoint.Endpoint cxfendpoint = null;
 
@@ -122,15 +103,16 @@ public class JAXWSEnvironment {
 
         for (Server s : sr.getServers()) {
             Class<?> endpointClass = ((Class)s.getEndpoint().getService().get("endpoint.class"));
-            if (service.getClass().getName().equals(endpointClass.getName()) ||
-                 (endpointClass.isInterface() && endpointClass.isAssignableFrom(service.getClass()))) {
+            if (endpointBuilder.getService().getClass().getName().equals(endpointClass.getName()) ||
+                    (endpointClass.isInterface() && endpointClass.isAssignableFrom(endpointBuilder.getService().getClass()))) {
                 cxfendpoint = s.getEndpoint();
                 break;
             }
         }
 
         if (cxfendpoint == null) {
-            throw new RuntimeException("Error publishing endpoint for service: " + service.getClass().getSimpleName() +
+            throw new RuntimeException("Error publishing endpoint for service: "
+                    + endpointBuilder.getService().getClass().getSimpleName() +
                     ": " + "Matching 'endpoint.class' not found.");
         }
 
@@ -140,48 +122,84 @@ public class JAXWSEnvironment {
         ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
         invoker = this.createValidatingInvoker(invoker, vf.getValidator());
 
-        if (sessionFactory != null) {
+        if (endpointBuilder.getSessionFactory() != null) {
             // Add invoker to handle UnitOfWork annotations. Note that this invoker is set up before
             // instrumented invoker(s) in order for instrumented invoker(s) to wrap "unit of work" invoker.
-            invoker = unitOfWorkInvokerBuilder.create(service, invoker, sessionFactory);
+            invoker = unitOfWorkInvokerBuilder.create(
+                    endpointBuilder.getService(), invoker, endpointBuilder.getSessionFactory());
             cxfendpoint.getService().setInvoker(invoker);
         }
 
         // Replace CXF service invoker with instrumented invoker(s)
-        invoker = instrumentedInvokerBuilder.create(service, invoker);
+        invoker = instrumentedInvokerBuilder.create(endpointBuilder.getService(), invoker);
         cxfendpoint.getService().setInvoker(invoker);
 
-        if (authentication != null) {
+        if (endpointBuilder.getAuthentication() != null) {
             // Configure CXF in interceptor to handle basic authentication
             BasicAuthenticationInterceptor basicAuthInterceptor = this.createBasicAuthenticationInterceptor();
-            basicAuthInterceptor.setAuthenticator(authentication);
+            basicAuthInterceptor.setAuthenticator(endpointBuilder.getAuthentication());
             cxfendpoint.getInInterceptors().add(basicAuthInterceptor);
+        }
+
+        // CXF interceptors
+
+        if (endpointBuilder.getCxfInInterceptors() != null) {
+            cxfendpoint.getInInterceptors().addAll(endpointBuilder.getCxfInInterceptors());
+        }
+
+        if (endpointBuilder.getCxfInFaultInterceptors() != null) {
+            cxfendpoint.getInFaultInterceptors().addAll(endpointBuilder.getCxfInFaultInterceptors());
+        }
+
+        if (endpointBuilder.getCxfOutInterceptors() != null) {
+            cxfendpoint.getOutInterceptors().addAll(endpointBuilder.getCxfOutInterceptors());
+        }
+
+        if (endpointBuilder.getCxfOutFaultInterceptors() != null) {
+            cxfendpoint.getOutFaultInterceptors().addAll(endpointBuilder.getCxfOutFaultInterceptors());
         }
     }
 
-    /* JAX-WS client factory */
-
-    public <T> T getClient(Class<T> serviceClass, String address, Handler ... handlers) {
+    /**
+     * JAX-WS client factory
+     * @param clientBuilder ClientBuilder.
+     * @param <T> Service interface type.
+     * @return JAX-WS client proxy.
+     */
+    public <T> T getClient(ClientBuilder<T> clientBuilder) {
 
         JaxWsProxyFactoryBean proxyFactory = new JaxWsProxyFactoryBean();
-        proxyFactory.setServiceClass(serviceClass);
-        proxyFactory.setAddress(address);
+        proxyFactory.setServiceClass(clientBuilder.getServiceClass());
+        proxyFactory.setAddress(clientBuilder.getAddress());
 
-        for (Handler h : handlers) {
-            proxyFactory.getHandlers().add(h);
+        // JAX-WS handlers
+        if (clientBuilder.getHandlers() != null) {
+            for (Handler h : clientBuilder.getHandlers()) {
+                proxyFactory.getHandlers().add(h);
+            }
         }
 
-        T proxy = serviceClass.cast(proxyFactory.create());
+        // CXF interceptors
+        if (clientBuilder.getCxfInInterceptors() != null) {
+            proxyFactory.getInInterceptors().addAll(clientBuilder.getCxfInInterceptors());
+        }
+        if (clientBuilder.getCxfInFaultInterceptors() != null) {
+            proxyFactory.getInFaultInterceptors().addAll(clientBuilder.getCxfInFaultInterceptors());
+        }
+        if (clientBuilder.getCxfOutInterceptors() != null) {
+            proxyFactory.getOutInterceptors().addAll(clientBuilder.getCxfOutInterceptors());
+        }
+        if (clientBuilder.getCxfOutFaultInterceptors() != null) {
+            proxyFactory.getOutFaultInterceptors().addAll(clientBuilder.getCxfOutFaultInterceptors());
+        }
+
+        T proxy = clientBuilder.getServiceClass().cast(proxyFactory.create());
 
         HTTPConduit http = (HTTPConduit)ClientProxy.getClient(proxy).getConduit();
         HTTPClientPolicy client = http.getClient();
-
-        //TODO: configurable connection timeout
-        client.setConnectionTimeout(500);
-        //TODO: configurable receive timeout
-        client.setReceiveTimeout(2000);
+        client.setConnectionTimeout(clientBuilder.getConnectTimeout());
+        client.setReceiveTimeout(clientBuilder.getReceiveTimeout());
 
         return proxy;
     }
-
 }

@@ -74,9 +74,20 @@ public class JAXWSBundle implements Bundle {
     }
 
     /**
+     * Publish JAX-WS endpoint. Endpoint will be published relative to the CXF servlet path.
+     * @param endpointBuilder EndpointBuilder.
+     */
+     public void publishEndpoint(EndpointBuilder endpointBuilder) {
+        checkArgument(endpointBuilder != null, "EndpointBuilder is null");
+        this.jaxwsEnvironment.publishEndpoint(endpointBuilder);
+    }
+
+    /**
      * Publish JAX-WS endpoint. Endpoint is published relative to the CXF servlet path.
      * @param path Relative endpoint path.
      * @param service Service implementation.
+     *
+     * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
     public void publishEndpoint(String path, Object service) {
         this.publishEndpoint(path, service, null, null);
@@ -84,21 +95,25 @@ public class JAXWSBundle implements Bundle {
 
     /**
      * Publish JAX-WS endpoint with Dropwizard Hibernate Bundle integration. Service is scanned for @UnitOfWork
-     * annotations. Endpoint is published relative to the CXF servlet path.
+     * annotations. EndpointBuilder is published relative to the CXF servlet path.
      * @param path Relative endpoint path.
      * @param service Service implementation.
      * @param sessionFactory Hibernate session factory.
+     *
+     * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
     public void publishEndpoint(String path, Object service, SessionFactory sessionFactory) {
         this.publishEndpoint(path, service, null, sessionFactory);
     }
 
     /**
-     * Publish JAX-WS protected endpoint using Dropwizard BasicAuthentication. Endpoint is published relative
+     * Publish JAX-WS protected endpoint using Dropwizard BasicAuthentication. EndpointBuilder is published relative
      * to the CXF servlet path.
      * @param path Relative endpoint path.
      * @param service Service implementation.
      * @param authentication BasicAuthentication implementation.
+     *
+     * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
     public void publishEndpoint(String path, Object service, BasicAuthentication authentication) {
         this.publishEndpoint(path, service, authentication, null);
@@ -106,23 +121,24 @@ public class JAXWSBundle implements Bundle {
 
     /**
      * Publish JAX-WS protected endpoint using Dropwizard BasicAuthentication with Dropwizard Hibernate Bundle
-     * integration. Service is scanned for @UnitOfWork annotations. Endpoint is published relative to the CXF
+     * integration. Service is scanned for @UnitOfWork annotations. EndpointBuilder is published relative to the CXF
      * servlet path.
      * @param path Relative endpoint path.
      * @param service Service implementation.
-     * @param authentication BasicAuthentication implementation.
+     * @param auth BasicAuthentication implementation.
      * @param sessionFactory Hibernate session factory.
+     *
+     * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public void publishEndpoint(String path, Object service, BasicAuthentication authentication,
+    public void publishEndpoint(String path, Object service, BasicAuthentication auth,
                                 SessionFactory sessionFactory) {
         checkArgument(service != null, "Service is null");
         checkArgument(path != null, "Path is null");
         checkArgument((path).trim().length() > 0, "Path is empty");
-        jaxwsEnvironment.publishEndpoint(
-                path,
-                service,
-                authentication,
-                sessionFactory);
+        this.publishEndpoint(new EndpointBuilder(path, service)
+                .authentication(auth)
+                .sessionFactory(sessionFactory)
+        );
     }
 
     /**
@@ -132,12 +148,26 @@ public class JAXWSBundle implements Bundle {
      * @param handlers Client side JAX-WS handlers. Optional.
      * @param <T> Service interface type.
      * @return JAX-WS client proxy.
+     *
+     * @deprecated Use the {@link #getClient(ClientBuilder)} getClient} method instead.
      */
+    @Deprecated
     public <T> T getClient(Class<T> serviceClass, String address, Handler...handlers) {
         checkArgument(serviceClass != null, "ServiceClass is null");
         checkArgument(address != null, "Address is null");
         checkArgument((address).trim().length() > 0, "Address is empty");
-        return jaxwsEnvironment.<T>getClient(serviceClass, address, handlers);
+        return jaxwsEnvironment.getClient(
+                new ClientBuilder<T>(serviceClass, address).handlers(handlers));
     }
 
+    /**
+     * Factory method for creating JAX-WS clients.
+     * @param clientBuilder ClientBuilder.
+     * @param <T> Service interface type.
+     * @return Client proxy.
+     */
+    public <T> T getClient(ClientBuilder<T> clientBuilder) {
+        checkArgument(clientBuilder != null, "ClientBuilder is null");
+        return jaxwsEnvironment.getClient(clientBuilder);
+    }
 }
