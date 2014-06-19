@@ -16,6 +16,7 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
+import ws.example.jaxws.dropwizard.roskart.com.mtomservice.MtomService;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;
 
 public class JaxWsExampleApplication extends Application<JaxWsExampleApplicationConfiguration> {
@@ -65,6 +66,13 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
                     new HibernateExampleService(new PersonDAO(hibernate.getSessionFactory())))
                 .sessionFactory(hibernate.getSessionFactory()));
 
+        // WSDL first service using MTOM. Invoking enableMTOM on EndpointBuilder is not necessary
+        // if you use @MTOM JAX-WS annotation on your service implementation class.
+        jaxWsBundle.publishEndpoint(
+                new EndpointBuilder("/mtom", new MtomServiceImpl())
+                    .enableMtom()
+        );
+
         // RESTful resource that invokes WsdlFirstService on localhost and uses client side JAX-WS handler.
         environment.jersey().register(new AccessWsdlFirstServiceResource(
                 jaxWsBundle.getClient(
@@ -72,6 +80,14 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
                                 WsdlFirstService.class,
                                 "http://localhost:8080/soap/wsdlfirst")
                                 .handlers(new WsdlFirstClientHandler()))));
+
+        // RESTful resource that invokes MtomService on localhost
+        environment.jersey().register(new AccessMtomServiceResource(
+                jaxWsBundle.getClient(
+                        new ClientBuilder<MtomService>(
+                                MtomService.class,
+                                "http://localhost:8080/soap/mtom")
+                                .enableMtom())));
 
         // RESTful resource that invokes JavaFirstService on localhost and uses basic authentication and
         // client side CXF interceptors.

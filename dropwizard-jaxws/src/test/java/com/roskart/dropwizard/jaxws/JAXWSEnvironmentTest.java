@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.helpers.XMLUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
@@ -24,10 +25,14 @@ import org.w3c.dom.Node;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
-import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.soap.SOAPBinding;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Proxy;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -214,6 +219,27 @@ public class JAXWSEnvironmentTest {
         testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse", soapResponse);
     }
 
+
+    @Test
+    public void publishEndpointWithMtom() throws Exception {
+
+        jaxwsEnvironment.publishEndpoint(
+                new EndpointBuilder("local://path", service)
+                        .enableMtom());
+
+        verify(mockInvokerBuilder).create(any(), any(Invoker.class));
+
+        byte[] response = testutils.invokeBytes("local://path", LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+
+        verify(mockInvoker).invoke(any(Exchange.class), any());
+
+        MimeMultipart mimeMultipart = new MimeMultipart(new ByteArrayDataSource(response,
+                "application/xop+xml; charset=UTF-8; type=\"text/xml\""));
+        assertThat(mimeMultipart.getCount(), equalTo(1));
+        testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse",
+                XMLUtils.parse(mimeMultipart.getBodyPart(0).getInputStream()));
+    }
+
     @Test
     public void publishEndpointWithInvalidArguments() throws Exception {
 
@@ -250,13 +276,13 @@ public class JAXWSEnvironmentTest {
         Client c = ClientProxy.getClient(clientProxy);
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
-        assertThat(((BindingProvider)clientProxy).getBinding().getHandlerChain().size(), equalTo(0));
+        assertThat(((BindingProvider)clientProxy).getBinding() .getHandlerChain().size(), equalTo(0));
 
         HTTPClientPolicy httpclient = ((HTTPConduit)c.getConduit()).getClient();
         assertThat(httpclient.getConnectionTimeout(), equalTo(500L));
         assertThat(httpclient.getReceiveTimeout(), equalTo(2000L));
 
-        // with timeouts, handlers and interceptors
+        // with timeouts, handlers, interceptors and MTOM
 
         TestInterceptor inInterceptor = new TestInterceptor(Phase.UNMARSHAL);
         TestInterceptor inInterceptor2 = new TestInterceptor(Phase.PRE_INVOKE);
@@ -268,7 +294,8 @@ public class JAXWSEnvironmentTest {
                         .receiveTimeout(456)
                         .handlers(handler)
                         .cxfInInterceptors(inInterceptor, inInterceptor2)
-                        .cxfOutInterceptors(outInterceptor));
+                        .cxfOutInterceptors(outInterceptor)
+                        .enableMtom());
         c = ClientProxy.getClient(clientProxy);
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
@@ -278,5 +305,9 @@ public class JAXWSEnvironmentTest {
         assertThat(httpclient.getReceiveTimeout(), equalTo(456L));
 
         assertThat(((BindingProvider)clientProxy).getBinding().getHandlerChain(), contains(handler));
+
+        BindingProvider bp = (BindingProvider)clientProxy;
+        SOAPBinding binding = (SOAPBinding)bp.getBinding();
+        assertThat(binding.isMTOMEnabled(), equalTo(true));
     }
 }

@@ -2,6 +2,7 @@ package com.roskart.dropwizard.jaxws;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.common.util.SOAPConstants;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.endpoint.ServerRegistry;
 import org.apache.cxf.frontend.ClientProxy;
@@ -17,8 +18,13 @@ import javax.servlet.http.HttpServlet;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
+import javax.xml.ws.soap.SOAPBinding;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -95,7 +101,13 @@ public class JAXWSEnvironment {
     public void publishEndpoint(EndpointBuilder endpointBuilder) {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
 
-        Endpoint.publish(endpointBuilder.getPath(), endpointBuilder.getService());
+        Endpoint endpoint = Endpoint.publish(endpointBuilder.getPath(), endpointBuilder.getService());
+
+        // MTOM support
+        if (endpointBuilder.isMtomEnabled()) {
+            ((SOAPBinding)endpoint.getBinding()).setMTOMEnabled(true);
+        }
+
 
         org.apache.cxf.endpoint.Endpoint cxfendpoint = null;
 
@@ -194,6 +206,13 @@ public class JAXWSEnvironment {
         }
 
         T proxy = clientBuilder.getServiceClass().cast(proxyFactory.create());
+
+        // MTOM support
+        if (clientBuilder.isMtomEnabled()) {
+            BindingProvider bp = (BindingProvider)proxy;
+            SOAPBinding binding = (SOAPBinding)bp.getBinding();
+            binding.setMTOMEnabled(true);
+        }
 
         HTTPConduit http = (HTTPConduit)ClientProxy.getClient(proxy).getConduit();
         HTTPClientPolicy client = http.getClient();

@@ -109,4 +109,9 @@ public class ClientBuilder<T> extends AbstractBuilder {
     public final ClientBuilder<T> cxfOutFaultInterceptors(Interceptor<? extends Message>... interceptors) {
         return (ClientBuilder<T>)super.cxfOutFaultInterceptors(interceptors);
     }
+
+    @Override
+    public ClientBuilder<T> enableMtom() {
+        return (ClientBuilder<T>)super.enableMtom();
+    }
 }

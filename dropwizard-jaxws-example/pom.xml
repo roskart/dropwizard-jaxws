@@ -67,6 +67,9 @@
                             <wsdlOption>
                                 <wsdl>${basedir}/src/main/resources/META-INF/WsdlFirstService.wsdl</wsdl>
                             </wsdlOption>
+                            <wsdlOption>
+                                <wsdl>${basedir}/src/main/resources/META-INF/MtomService.wsdl</wsdl>
+                            </wsdlOption>
                         </wsdlOptions>
                     </configuration>
                 </execution>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:tns="http://com.roskart.dropwizard.jaxws.example.ws/MtomService"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+        name="MtomService"
+        targetNamespace="http://com.roskart.dropwizard.jaxws.example.ws/MtomService">
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://com.roskart.dropwizard.jaxws.example.ws/MtomService">
+
+            <xsd:element name="Hello" type="tns:Hello">
+            </xsd:element>
+            <xsd:element name="HelloResponse" type="tns:HelloResponse">
+            </xsd:element>
+
+            <xsd:complexType name="Hello">
+                <xsd:sequence>
+                    <xsd:element name="title" type="xsd:string"></xsd:element>
+                    <xsd:element name="binary" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="HelloResponse">
+                <xsd:sequence>
+                    <xsd:element name="title" type="xsd:string"></xsd:element>
+                    <xsd:element name="binary" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="HelloRequest">
+        <wsdl:part name="parameters" element="tns:Hello"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="HelloResponse">
+        <wsdl:part name="parameters" element="tns:HelloResponse"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:portType name="MtomService">
+        <wsdl:operation name="hello">
+            <wsdl:input message="tns:HelloRequest"></wsdl:input>
+            <wsdl:output message="tns:HelloResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="MtomServiceSOAP" type="tns:MtomService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="hello">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="MtomService">
+        <wsdl:port binding="tns:MtomServiceSOAP" name="MtomServiceSOAP">
+            <soap:address location="http://localhost:8080/soap/mtom"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

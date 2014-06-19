@@ -9,10 +9,15 @@ import org.apache.cxf.message.Message;
  */
 public abstract class AbstractBuilder {
 
+    protected boolean mtomEnabled = false;
     protected ImmutableList<Interceptor<? extends Message>> cxfInInterceptors;
     protected ImmutableList<Interceptor<? extends Message>> cxfInFaultInterceptors;
     protected ImmutableList<Interceptor<? extends Message>> cxfOutInterceptors;
     protected ImmutableList<Interceptor<? extends Message>> cxfOutFaultInterceptors;
+
+    public boolean isMtomEnabled() {
+        return mtomEnabled;
+    }
 
     public ImmutableList<Interceptor<? extends Message>> getCxfInInterceptors() {
         return cxfInInterceptors;
@@ -75,6 +80,15 @@ public abstract class AbstractBuilder {
         this.cxfOutFaultInterceptors =
                 ImmutableList.<Interceptor<? extends Message>>builder()
                         .add(interceptors).build();
+        return this;
+    }
+
+    /**
+     * Enable MTOM for binary attachments.
+     * @return
+     */
+    public AbstractBuilder enableMtom() {
+        this.mtomEnabled = true;
         return this;
     }
 }

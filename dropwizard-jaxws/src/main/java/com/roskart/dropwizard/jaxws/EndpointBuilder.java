@@ -94,4 +94,13 @@ public class EndpointBuilder extends AbstractBuilder {
     public final EndpointBuilder cxfOutFaultInterceptors(Interceptor<? extends Message>... interceptors) {
         return (EndpointBuilder)super.cxfOutFaultInterceptors(interceptors);
     }
+
+    /**
+     * Invoking enableMTOM is not necessary if you use @MTOM JAX-WS annotation on your service implementation class.
+     * @return
+     */
+    @Override
+    public EndpointBuilder enableMtom() {
+        return (EndpointBuilder)super.enableMtom();
+    }
 }

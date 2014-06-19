@@ -14,7 +14,7 @@ Features
 * Dropwizard Hibernate support (@UnitOfWork).
 * Dropwizard basic authentication using Dropwizard Authenticator.
 * Web service client factory.
-* Support for JAX-WS handlers as well as CXF interceptors, both client and server side.
+* Support for JAX-WS handlers, CXF interceptors(both client and server side) and MTOM.
 
 Hello World
 -----------
@@ -82,11 +82,18 @@ implementation. `WsdlFirstServiceHandler` contains server-side JAX-WS handler.
 validation on `createPerson` method. `HibernateExampleService` accesses the database through `PersonDAO`. Embedded H2
 database is used. Database configuration is stored in Dropwizard config file `config.yaml`.
 
+* **MtomService**: WSDL first MTOM attachment example. WSDL is stored in `resources/META-INF/MtomService.wsdl`.
+Code is generated using `cxf-codegen-plugin` which is configured in `pom.xml`. `MtomServiceImpl` contains service
+implementation with MTOM enabled.
+
 * **AccessProtectedServiceResource**: Dropwizard RESTful service which uses `JavaFirstService` client to invoke
 `JavaFirstService` SOAP web service on the same host. User credentials are provided to access protected service.
 
 * **AccessWsdlFirstServiceResource**: Dropwizard RESTful service which uses `WsdlFirstService` client to invoke
 `WsdlFirstService` SOAP web service on the same host. `WsdlFirstClientHandler` contains client-side JAX-WS handler.
+
+* **AccessMtomServiceResource**: Dropwizard RESTful service which uses `MtomService` client to invoke
+`MtomService` SOAP web service on the same host as an example for client side MTOM support.
 
 * See `JaxWsExampleApplication` for examples on usage of client side JAX-WS handler and CXF interceptors.
 
@@ -98,14 +105,14 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.3.0.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.4.0.jar server dropwizard-jaxws-example\config.yaml
 
 To use dropwizard-jaxws in your project, add the following dependency to `pom.xml`:
 
         <dependency>
             <groupId>com.roskart.dropwizard</groupId>
             <artifactId>dropwizard-jaxws</artifactId>
-            <version>0.3.0</version>
+            <version>0.4.0</version>
         </dependency>
 
 Notes
@@ -128,6 +135,10 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 
 Changelog
 ---------
+
+### v0.4.0
+
+- Added MTOM support and examples.
 
 ### v0.3.0
 
