@@ -4,13 +4,13 @@ import ch.qos.logback.classic.Level;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.helpers.XMLUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.invoker.Invoker;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.test.TestUtilities;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transport.local.LocalTransportFactory;
@@ -31,8 +31,6 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Proxy;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -64,6 +62,7 @@ public class JAXWSEnvironmentTest {
     @WebService
     interface DummyInterface {
         @WebMethod
+        @SuppressWarnings("unused")
         public void foo();
     }
 
@@ -237,7 +236,7 @@ public class JAXWSEnvironmentTest {
                 "application/xop+xml; charset=UTF-8; type=\"text/xml\""));
         assertThat(mimeMultipart.getCount(), equalTo(1));
         testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse",
-                XMLUtils.parse(mimeMultipart.getBodyPart(0).getInputStream()));
+                StaxUtils.read(mimeMultipart.getBodyPart(0).getInputStream()));
     }
 
     @Test
@@ -269,7 +268,7 @@ public class JAXWSEnvironmentTest {
 
         // simple
         DummyInterface clientProxy = jaxwsEnvironment.getClient(
-                new ClientBuilder<DummyInterface>(DummyInterface.class, address)
+                new ClientBuilder<>(DummyInterface.class, address)
         );
         assertThat(clientProxy, is(instanceOf(Proxy.class)));
 
@@ -289,7 +288,7 @@ public class JAXWSEnvironmentTest {
         TestInterceptor outInterceptor = new TestInterceptor(Phase.MARSHAL);
 
         clientProxy = jaxwsEnvironment.getClient(
-                new ClientBuilder<DummyInterface>(DummyInterface.class, address)
+                new ClientBuilder<>(DummyInterface.class, address)
                         .connectTimeout(123)
                         .receiveTimeout(456)
                         .handlers(handler)

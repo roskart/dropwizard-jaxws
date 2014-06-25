@@ -14,7 +14,6 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.Conduit;
-import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,8 +116,7 @@ public class BasicAuthenticationInterceptor extends AbstractPhaseInterceptor<Mes
 
     private Conduit getConduit(Message inMessage) throws IOException {
         Exchange exchange = inMessage.getExchange();
-        EndpointReferenceType target = exchange.get(EndpointReferenceType.class);
-        Conduit conduit = exchange.getDestination().getBackChannel(inMessage, null, target);
+        Conduit conduit = exchange.getDestination().getBackChannel(inMessage);
         exchange.setConduit(conduit);
         return conduit;
     }

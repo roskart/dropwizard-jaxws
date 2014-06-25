@@ -40,6 +40,7 @@ public abstract class AbstractBuilder {
      * @param interceptors CXF interceptors.
      * @return EndpointBuilder instance.
      */
+    @SuppressWarnings("unchecked")
     public AbstractBuilder cxfInInterceptors(Interceptor<? extends Message> ... interceptors) {
         this.cxfInInterceptors =
                 ImmutableList.<Interceptor<? extends Message>>builder()
@@ -52,6 +53,7 @@ public abstract class AbstractBuilder {
      * @param interceptors CXF interceptors.
      * @return EndpointBuilder instance.
      */
+    @SuppressWarnings("unchecked")
     public AbstractBuilder cxfInFaultInterceptors(Interceptor<? extends Message> ... interceptors) {
         this.cxfInFaultInterceptors =
                 ImmutableList.<Interceptor<? extends Message>>builder()
@@ -64,6 +66,7 @@ public abstract class AbstractBuilder {
      * @param interceptors CXF interceptors.
      * @return EndpointBuilder instance.
      */
+    @SuppressWarnings("unchecked")
     public AbstractBuilder cxfOutInterceptors(Interceptor<? extends Message> ... interceptors) {
         this.cxfOutInterceptors =
                 ImmutableList.<Interceptor<? extends Message>>builder()
@@ -76,6 +79,7 @@ public abstract class AbstractBuilder {
      * @param interceptors CXF interceptors.
      * @return EndpointBuilder instance.
      */
+    @SuppressWarnings("unchecked")
     public AbstractBuilder cxfOutFaultInterceptors(Interceptor<? extends Message> ... interceptors) {
         this.cxfOutFaultInterceptors =
                 ImmutableList.<Interceptor<? extends Message>>builder()
