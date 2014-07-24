@@ -129,6 +129,13 @@ configuration:
 
 For example on building fat jar, see `dropwizard-jaxws-example/pom.xml`.
 
+When using Gradle and a recent version of [shadowJar](https://github.com/johnrengelman/shadow) use the following snippet:
+
+    shadowJar {
+        // ...
+        append('META-INF/cxf/bus-extensions.txt')
+    }
+    
 License
 -------
 Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard-jaxws/blob/master/LICENSE).
