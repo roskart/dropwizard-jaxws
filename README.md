@@ -105,14 +105,14 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.5.0.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.6.0.jar server dropwizard-jaxws-example\config.yaml
 
 To use dropwizard-jaxws in your project, add the following dependency to `pom.xml`:
 
         <dependency>
             <groupId>com.roskart.dropwizard</groupId>
             <artifactId>dropwizard-jaxws</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0</version>
         </dependency>
 
 Notes
@@ -142,6 +142,11 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 
 Changelog
 ---------
+
+### v0.6.0
+
+- Upgraded to Dropwizard 0.8.0.
+- Upgraded to CXF 3.0.4.
 
 ### v0.5.0
 
