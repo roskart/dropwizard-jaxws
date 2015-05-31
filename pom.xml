@@ -6,7 +6,7 @@
 
     <groupId>com.github.roskart.dropwizard-jaxws</groupId>
     <artifactId>dropwizard-jaxws-parent</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.8.0</version>
     <packaging>pom</packaging>
     <name>Dropwizard JAX-WS</name>
     <description>
@@ -82,10 +82,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>package</phase>
-                                <!--
                                 <phase>verify</phase>
-                                -->
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
