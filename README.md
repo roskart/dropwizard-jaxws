@@ -16,6 +16,17 @@ Features
 * Web service client factory.
 * Support for JAX-WS handlers, CXF interceptors(both client and server side) and MTOM.
 
+Using
+-----
+
+To use dropwizard-jaxws in your project, add the following dependency to your `pom.xml`:
+
+        <dependency>
+            <groupId>com.github.roskart.dropwizard-jaxws</groupId>
+            <artifactId>dropwizard-jaxws</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+
 Hello World
 -----------
 
@@ -97,23 +108,15 @@ implementation with MTOM enabled.
 
 * See `JaxWsExampleApplication` for examples on usage of client side JAX-WS handler and CXF interceptors.
 
-Building and running
---------------------
+### Running the examples:
+
 After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
-        mvn install
+        mvn package
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.7.0.jar server dropwizard-jaxws-example\config.yaml
-
-To use dropwizard-jaxws in your project, add the following dependency to `pom.xml`:
-
-        <dependency>
-            <groupId>com.roskart.dropwizard</groupId>
-            <artifactId>dropwizard-jaxws</artifactId>
-            <version>0.7.0</version>
-        </dependency>
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.8.0.jar server dropwizard-jaxws-example\config.yaml
 
 Notes
 -----
@@ -142,6 +145,10 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 
 Changelog
 ---------
+
+### v0.8.0
+
+- Project is now released to Maven Central. Maven coordinates were changed.
 
 ### v0.7.0
 
