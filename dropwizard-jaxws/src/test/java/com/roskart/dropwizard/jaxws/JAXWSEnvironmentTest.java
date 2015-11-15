@@ -60,10 +60,10 @@ public class JAXWSEnvironmentTest {
 
     // DummyInterface is used by getClient test
     @WebService
-    interface DummyInterface {
+    public interface DummyInterface {
         @WebMethod
         @SuppressWarnings("unused")
-        public void foo();
+        void foo();
     }
 
     // TestInterceptor is used for testing CXF interceptors

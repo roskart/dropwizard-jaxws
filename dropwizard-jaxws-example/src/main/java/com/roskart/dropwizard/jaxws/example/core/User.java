@@ -1,16 +1,19 @@
 package com.roskart.dropwizard.jaxws.example.core;
 
+import java.security.Principal;
+
 /**
  * See dropwizard-example: com.example.helloworld.core.User
  */
-public class User {
+public class User implements Principal {
     private final String userName;
 
     public User(String userName) {
         this.userName = userName;
     }
 
-    public String getUserName() {
-        return userName;
+    @Override
+    public String getName() {
+        return this.userName;
     }
 }

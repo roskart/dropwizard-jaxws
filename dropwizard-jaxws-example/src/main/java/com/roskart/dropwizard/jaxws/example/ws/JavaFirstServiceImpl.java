@@ -1,12 +1,12 @@
 package com.roskart.dropwizard.jaxws.example.ws;
 
-import com.roskart.dropwizard.jaxws.example.core.User;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
+import java.security.Principal;
 
 @WebService(name="JavaFirstService",
         serviceName="JavaFirstService",
@@ -26,7 +26,7 @@ public class JavaFirstServiceImpl implements JavaFirstService {
             throw new JavaFirstServiceException("Invalid parameter");
         }
 
-        User user = (User)wsContext.getMessageContext().get("dropwizard.jaxws.principal");
-        return in + "; principal: " + user.getUserName();
+        Principal user = (Principal)wsContext.getMessageContext().get("dropwizard.jaxws.principal");
+        return in + "; principal: " + user.getName();
     }
 }
