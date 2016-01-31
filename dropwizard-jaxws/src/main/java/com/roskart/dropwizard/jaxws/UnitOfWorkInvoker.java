@@ -10,8 +10,11 @@ import org.hibernate.Transaction;
 import org.hibernate.context.internal.ManagedSessionContext;
 
 /**
- * Wraps underlying invoker in a Hibernate session.
- * @see io.dropwizard.hibernate.UnitOfWorkRequestDispatcher
+ * Wraps underlying invoker in a Hibernate session. Code in this class is based on Dropwizard's UnitOfWorkApplication
+ * listener and UnitOfWorkAspect. We don't use UnitOfWorkAspect here because it is declared package private.
+ * @see io.dropwizard.hibernate.UnitOfWorkAspect
+ * @see io.dropwizard.hibernate.UnitOfWorkApplicationListener
+ * @see io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory
  */
 public class UnitOfWorkInvoker extends AbstractInvoker {
 
@@ -60,7 +63,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     }
 
     /**
-     * Copied from com.yammer.dropwizard.hibernate.UnitOfWorkRequestDispatcher#beginTransaction()
+     * @see io.dropwizard.hibernate.UnitOfWorkAspect#beginTransaction()
      */
     private void beginTransaction(Session session, UnitOfWork unitOfWork) {
         if (unitOfWork.transactional()) {
@@ -69,7 +72,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     }
 
     /**
-     * Copied from com.yammer.dropwizard.hibernate.UnitOfWorkRequestDispatcher#configureSession()
+     * @see io.dropwizard.hibernate.UnitOfWorkAspect#configureSession()
      */
     private void configureSession(Session session, UnitOfWork unitOfWork) {
         session.setDefaultReadOnly(unitOfWork.readOnly());
@@ -78,7 +81,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     }
 
     /**
-     * Copied from com.yammer.dropwizard.hibernate.UnitOfWorkRequestDispatcher#rollbackTransaction()
+     * @see io.dropwizard.hibernate.UnitOfWorkAspect#rollbackTransaction()
      */
     private void rollbackTransaction(Session session, UnitOfWork unitOfWork) {
         if (unitOfWork.transactional()) {
@@ -90,7 +93,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     }
 
     /**
-     * Copied from com.yammer.dropwizard.hibernate.UnitOfWorkRequestDispatcher#commitTransaction()
+     * @see io.dropwizard.hibernate.UnitOfWorkAspect#commitTransaction()
      */
     private void commitTransaction(Session session, UnitOfWork unitOfWork) {
         if (unitOfWork.transactional()) {

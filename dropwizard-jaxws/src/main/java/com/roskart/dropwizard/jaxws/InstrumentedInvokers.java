@@ -8,7 +8,7 @@ import org.apache.cxf.service.invoker.Invoker;
 
 /**
  * Provides instrumented CXF invoker implementations.
- * @see com.codahale.metrics.jersey.InstrumentedResourceMethodDispatchProvider
+ * @see io.dropwizard.metrics.jersey2.InstrumentedResourceMethodApplicationListener
  */
 public class InstrumentedInvokers {
 

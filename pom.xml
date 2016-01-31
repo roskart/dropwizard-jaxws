@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <dropwizard.version>0.9.1</dropwizard.version>
+        <dropwizard.version>0.9.2</dropwizard.version>
         <cxf.version>3.1.4</cxf.version>
 
     </properties>
