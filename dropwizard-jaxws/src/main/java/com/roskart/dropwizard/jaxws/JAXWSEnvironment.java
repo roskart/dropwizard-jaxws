@@ -2,6 +2,7 @@ package com.roskart.dropwizard.jaxws;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.endpoint.ServerRegistry;
 import org.apache.cxf.frontend.ClientProxy;
@@ -18,7 +19,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
 
@@ -84,7 +84,7 @@ public class JAXWSEnvironment {
                 endpoints += "    " + this.defaultPath +  s.getEndpoint().getEndpointInfo().getAddress() +
                         " (" + s.getEndpoint().getEndpointInfo().getInterface().getName() + ")\n";
             }
-            log.info("The following JAX-WS service endpoints were registered:\n\n" + endpoints);
+            log.info("JAX-WS service endpoints [" + this.defaultPath + "]:\n\n" + endpoints);
         }
         else {
             log.info("No JAX-WS service endpoints were registered.");
@@ -97,31 +97,12 @@ public class JAXWSEnvironment {
     public void publishEndpoint(EndpointBuilder endpointBuilder) {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
 
-        Endpoint endpoint = Endpoint.publish(endpointBuilder.getPath(), endpointBuilder.getService());
+        EndpointImpl cxfendpoint = new EndpointImpl(bus, endpointBuilder.getService());
+        cxfendpoint.publish(endpointBuilder.getPath());
 
         // MTOM support
         if (endpointBuilder.isMtomEnabled()) {
-            ((SOAPBinding)endpoint.getBinding()).setMTOMEnabled(true);
-        }
-
-
-        org.apache.cxf.endpoint.Endpoint cxfendpoint = null;
-
-        ServerRegistry sr = bus.getExtension(org.apache.cxf.endpoint.ServerRegistry.class);
-
-        for (Server s : sr.getServers()) {
-            Class<?> endpointClass = ((Class)s.getEndpoint().getService().get("endpoint.class"));
-            if (endpointBuilder.getService().getClass().getName().equals(endpointClass.getName()) ||
-                    (endpointClass.isInterface() && endpointClass.isAssignableFrom(endpointBuilder.getService().getClass()))) {
-                cxfendpoint = s.getEndpoint();
-                break;
-            }
-        }
-
-        if (cxfendpoint == null) {
-            throw new RuntimeException("Error publishing endpoint for service: "
-                    + endpointBuilder.getService().getClass().getSimpleName() +
-                    ": " + "Matching 'endpoint.class' not found.");
+            ((SOAPBinding)cxfendpoint.getBinding()).setMTOMEnabled(true);
         }
 
         Invoker invoker = cxfendpoint.getService().getInvoker();

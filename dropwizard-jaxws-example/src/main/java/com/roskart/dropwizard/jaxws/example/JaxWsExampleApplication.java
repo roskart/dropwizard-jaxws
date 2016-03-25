@@ -31,6 +31,7 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
 
     // JAX-WS Bundle
     private JAXWSBundle jaxWsBundle = new JAXWSBundle();
+    private JAXWSBundle anotherJaxWsBundle = new JAXWSBundle("/api2");
 
     public static void main(String[] args) throws Exception {
         new JaxWsExampleApplication().run(args);
@@ -40,6 +41,7 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
     public void initialize(Bootstrap<JaxWsExampleApplicationConfiguration> bootstrap) {
         bootstrap.addBundle(hibernate);
         bootstrap.addBundle(jaxWsBundle);
+        bootstrap.addBundle(anotherJaxWsBundle);
     }
 
     @Override
@@ -47,6 +49,10 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
 
         // Hello world service
         jaxWsBundle.publishEndpoint(
+                new EndpointBuilder("/simple", new SimpleService()));
+
+        // Publish Hello world service again using different JAXWSBundle instance
+        anotherJaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/simple", new SimpleService()));
 
         // Java first service protected with basic authentication
@@ -61,10 +67,17 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
                     .cxfOutInterceptors(new LoggingOutInterceptor()));
 
         // Service using Hibernate
+        PersonDAO personDAO = new PersonDAO(hibernate.getSessionFactory());
         jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/hibernate",
-                    new HibernateExampleService(new PersonDAO(hibernate.getSessionFactory())))
-                .sessionFactory(hibernate.getSessionFactory()));
+                        new HibernateExampleService(personDAO))
+                        .sessionFactory(hibernate.getSessionFactory()));
+
+        // Publish the same service again using different JAXWSBundle instance
+        anotherJaxWsBundle.publishEndpoint(
+                new EndpointBuilder("/hibernate",
+                        new HibernateExampleService(personDAO))
+                        .sessionFactory(hibernate.getSessionFactory()));
 
         // WSDL first service using MTOM. Invoking enableMTOM on EndpointBuilder is not necessary
         // if you use @MTOM JAX-WS annotation on your service implementation class.
@@ -76,7 +89,7 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
         // RESTful resource that invokes WsdlFirstService on localhost and uses client side JAX-WS handler.
         environment.jersey().register(new AccessWsdlFirstServiceResource(
                 jaxWsBundle.getClient(
-                        new ClientBuilder<WsdlFirstService>(
+                        new ClientBuilder<>(
                                 WsdlFirstService.class,
                                 "http://localhost:8080/soap/wsdlfirst")
                                 .handlers(new WsdlFirstClientHandler()))));
@@ -84,7 +97,7 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
         // RESTful resource that invokes MtomService on localhost
         environment.jersey().register(new AccessMtomServiceResource(
                 jaxWsBundle.getClient(
-                        new ClientBuilder<MtomService>(
+                        new ClientBuilder<>(
                                 MtomService.class,
                                 "http://localhost:8080/soap/mtom")
                                 .enableMtom())));
@@ -93,7 +106,7 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
         // client side CXF interceptors.
         environment.jersey().register(new AccessProtectedServiceResource(
                 jaxWsBundle.getClient(
-                        new ClientBuilder<JavaFirstService>(
+                        new ClientBuilder<>(
                                 JavaFirstService.class,
                                 "http://localhost:8080/soap/javafirst")
                                 .cxfInInterceptors(new LoggingInInterceptor())

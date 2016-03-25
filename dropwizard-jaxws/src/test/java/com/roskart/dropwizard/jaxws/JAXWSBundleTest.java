@@ -71,7 +71,7 @@ public class JAXWSBundleTest {
         verify(jaxwsEnvironment).setInstrumentedInvokerBuilder(any(InstrumentedInvokerFactory.class));
 
         jaxwsBundle.run(environment);
-        verify(servletEnvironment).addServlet(eq("CXF Servlet"), any(Servlet.class));
+        verify(servletEnvironment).addServlet(startsWith("CXF Servlet"), any(Servlet.class));
         verify(lifecycleEnvironment).addServerLifecycleListener(any(ServerLifecycleListener.class));
         verify(servlet).addMapping("/soap/*");
     }

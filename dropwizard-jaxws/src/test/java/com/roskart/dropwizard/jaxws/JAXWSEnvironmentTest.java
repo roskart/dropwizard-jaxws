@@ -146,6 +146,29 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
+    public void publishEndpointWithAnotherEnvironment() throws Exception {
+
+        // creating new runtime environment simulates using separate bundles
+        JAXWSEnvironment anotherJaxwsEnvironment = new JAXWSEnvironment("soap2");
+        anotherJaxwsEnvironment.setInstrumentedInvokerBuilder(mockInvokerBuilder);
+        anotherJaxwsEnvironment.setUnitOfWorkInvokerBuilder(mockUnitOfWorkInvokerBuilder);
+
+        testutils.setBus(anotherJaxwsEnvironment.bus);
+
+        anotherJaxwsEnvironment.publishEndpoint(new EndpointBuilder("local://path", service));
+
+        verify(mockInvokerBuilder).create(any(), any(Invoker.class));
+        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+
+        Node soapResponse = testutils.invoke("local://path",
+                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+
+        verify(mockInvoker).invoke(any(Exchange.class), any());
+
+        testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse", soapResponse);
+    }
+
+    @Test
     public void publishEndpointWithAuthentication() throws Exception {
 
         jaxwsEnvironment.publishEndpoint(

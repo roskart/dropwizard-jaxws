@@ -64,7 +64,8 @@ public class JAXWSBundle implements Bundle {
     @Override
     public void run(Environment environment) {
         checkArgument(environment != null, "Environment is null");
-        environment.servlets().addServlet("CXF Servlet", jaxwsEnvironment.buildServlet()).addMapping(servletPath);
+        environment.servlets().addServlet("CXF Servlet " + jaxwsEnvironment.getDefaultPath(),
+                jaxwsEnvironment.buildServlet()).addMapping(servletPath);
         environment.lifecycle().addServerLifecycleListener(new ServerLifecycleListener() {
             @Override
             public void serverStarted(Server server) {
