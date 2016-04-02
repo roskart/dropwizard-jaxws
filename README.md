@@ -24,7 +24,7 @@ To use dropwizard-jaxws in your project, add the following dependency to your `p
         <dependency>
             <groupId>com.github.roskart.dropwizard-jaxws</groupId>
             <artifactId>dropwizard-jaxws</artifactId>
-            <version>0.10.1-SNAPSHOT</version>
+            <version>0.10.1</version>
         </dependency>
 
 Hello World
@@ -116,7 +116,7 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.10.1-SNAPSHOT.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.10.1.jar server dropwizard-jaxws-example\config.yaml
 
 Notes
 -----
