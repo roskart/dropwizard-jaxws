@@ -2,6 +2,7 @@ package com.roskart.dropwizard.jaxws;
 
 import io.dropwizard.validation.Validated;
 import io.dropwizard.validation.ValidationMethod;
+import org.apache.cxf.annotations.UseAsyncMethod;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.invoker.Invoker;
@@ -14,9 +15,12 @@ import org.junit.Test;
 import javax.validation.Validation;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.Response;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -67,6 +71,11 @@ public class ValidatingInvokerTest {
         }
         public void withDropwizardValidation(@Validated() String foo) {
         }
+        @UseAsyncMethod
+        public void asyncMethod(String foo) {
+        }
+        public void asyncMethodAsync(String foo, AsyncHandler asyncHandler) {
+        }
     }
 
     @Before
@@ -112,6 +121,29 @@ public class ValidatingInvokerTest {
         verify(underlying).invoke(exchange, params);
 
         params = Arrays.asList(new RootParam1(null), new RootParam2(null));
+        invoker.invoke(exchange, params);
+        verify(underlying).invoke(exchange, params);
+    }
+
+    @Test
+    public void invokeWithAsycHandler() {
+        setTargetMethod(exchange, "asyncMethod", String.class);
+
+        List<Object> params = Arrays.<Object>asList(null, new AsyncHandler(){
+            @Override
+            public void handleResponse(Response res) {
+
+            }
+        });
+        invoker.invoke(exchange, params);
+        verify(underlying).invoke(exchange, params);
+
+        params = Arrays.asList("foo", new AsyncHandler(){
+            @Override
+            public void handleResponse(Response res) {
+
+            }
+        });
         invoker.invoke(exchange, params);
         verify(underlying).invoke(exchange, params);
     }

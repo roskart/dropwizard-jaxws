@@ -13,6 +13,7 @@ import javax.validation.Validator;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.groups.Default;
+import javax.xml.ws.AsyncHandler;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
@@ -51,7 +52,9 @@ public class ValidatingInvoker extends AbstractInvoker {
             int i = 0;
             try {
                 for (Object parameter : params) {
-                    validate(parameterAnnotations[i++], parameter);
+                    if(parameter == null || !AsyncHandler.class.isAssignableFrom(parameter.getClass())) {
+                        validate(parameterAnnotations[i++], parameter);
+                    }
                 }
             }
             catch (ValidationException ve) {
