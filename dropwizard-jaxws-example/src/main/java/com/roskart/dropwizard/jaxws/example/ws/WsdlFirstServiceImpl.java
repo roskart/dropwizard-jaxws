@@ -36,11 +36,10 @@ public class WsdlFirstServiceImpl implements WsdlFirstService {
         return response;
     }
 
-    @Metered
     public Future<EchoResponse> nonBlockingEchoAsync(
         final NonBlockingEcho parameters,
-        final AsyncHandler<EchoResponse> asyncHandler
-    ) {
+        final AsyncHandler<EchoResponse> asyncHandler) {
+
         final ServerAsyncResponse<EchoResponse> sar = new ServerAsyncResponse<>();
 
         new Thread() {
@@ -60,5 +59,4 @@ public class WsdlFirstServiceImpl implements WsdlFirstService {
 
         return sar;
     }
-
 }

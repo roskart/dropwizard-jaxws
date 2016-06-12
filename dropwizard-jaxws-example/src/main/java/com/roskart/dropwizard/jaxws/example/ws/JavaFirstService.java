@@ -1,7 +1,5 @@
 package com.roskart.dropwizard.jaxws.example.ws;
 
-import com.codahale.metrics.annotation.Metered;
-
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -12,7 +10,7 @@ import javax.xml.ws.WebFault;
 public interface JavaFirstService {
 
     @WebFault(name = "JavaFirstServiceException")
-    public class JavaFirstServiceException extends Exception {
+    class JavaFirstServiceException extends Exception {
         public JavaFirstServiceException(String s) {
             super(s);
         }
@@ -20,5 +18,5 @@ public interface JavaFirstService {
 
     @WebMethod(operationName = "Echo")
     @WebResult(name = "EchoResponse")
-    public String echo(@WebParam(name = "EchoParameter") String in) throws JavaFirstServiceException;
+    String echo(@WebParam(name = "EchoParameter") String in) throws JavaFirstServiceException;
 }

@@ -14,7 +14,7 @@ Features
 * Dropwizard Hibernate support (@UnitOfWork).
 * Dropwizard basic authentication using Dropwizard Authenticator.
 * Web service client factory.
-* Support for JAX-WS handlers, CXF interceptors(both client and server side) and MTOM.
+* Support for JAX-WS handlers, MTOM, CXF interceptors(both client and server side) and CXF @UseAsyncMethod annotation.
 
 Using
 -----
@@ -24,7 +24,7 @@ To use dropwizard-jaxws in your project, add the following dependency to your `p
         <dependency>
             <groupId>com.github.roskart.dropwizard-jaxws</groupId>
             <artifactId>dropwizard-jaxws</artifactId>
-            <version>0.10.1</version>
+            <version>0.10.2</version>
         </dependency>
 
 Hello World
@@ -86,7 +86,7 @@ basic authentication using `dropwizard-auth`. `BasicAuthenticator` implements Dr
 
 * **WsdlFirstService**: WSDL first development example. WSDL is stored in `resources/META-INF/WsdlFirstService.wsdl`.
 Code is generated using `cxf-codegen-plugin` which is configured in `pom.xml`. `WsdlFirstServiceImpl` contains service
-implementation. `WsdlFirstServiceHandler` contains server-side JAX-WS handler.
+implementation with blocking and non-blocking methods. `WsdlFirstServiceHandler` contains server-side JAX-WS handler.
 
 * **HibernateExampleService**: `dropwizard-hibernate` example. `HibernateExampleService` implements the service.
 `@UnitOfWork` annotations are used for defining transactional boundaries. `@Valid` annotation is used for parameter
@@ -116,7 +116,7 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.10.1.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-0.10.2.jar server dropwizard-jaxws-example\config.yaml
 
 Notes
 -----
@@ -145,6 +145,10 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 
 Changelog
 ---------
+
+### v0.10.2
+
+- Added support for CXF @UseAsyncMethod annotation (see Pull request #8).
 
 ### v0.10.1
 
