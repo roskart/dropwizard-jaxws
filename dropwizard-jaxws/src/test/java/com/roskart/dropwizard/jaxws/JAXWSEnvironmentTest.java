@@ -285,22 +285,8 @@ public class JAXWSEnvironmentTest {
 
     @Test
     public void publishEndpointWithPublishedUrlPrefix() throws WSDLException {
-        jaxwsEnvironment = new JAXWSEnvironment("soap", "http://external/prefix") {
-            @Override
-            protected BasicAuthenticationInterceptor createBasicAuthenticationInterceptor() {
-                return new BasicAuthenticationInterceptor() {
-                    @Override
-                    public void handleMessage(Message message) throws Fault {
-                        mockBasicAuthInterceptorInvoked++;
-                    }
-                };
-            }
-        };
 
-        testutils.setBus(jaxwsEnvironment.bus);
-        jaxwsEnvironment.setUnitOfWorkInvokerBuilder(mockUnitOfWorkInvokerBuilder);
-        jaxwsEnvironment.setInstrumentedInvokerBuilder(mockInvokerBuilder);
-
+        jaxwsEnvironment.setPublishedEndpointUrlPrefix("http://external/prefix");
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("/path", service)

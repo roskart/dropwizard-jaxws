@@ -45,10 +45,6 @@ public class JAXWSEnvironment {
     }
 
     public JAXWSEnvironment(String defaultPath) {
-        this(defaultPath, null);
-    }
-    public JAXWSEnvironment(String defaultPath, String publishedEndpointUrlPrefix) {
-        this.publishedEndpointUrlPrefix = publishedEndpointUrlPrefix;
 
         System.setProperty("org.apache.cxf.Logger", "org.apache.cxf.common.logging.Slf4jLogger");
         /*
@@ -66,6 +62,10 @@ public class JAXWSEnvironment {
         CXFNonSpringServlet cxf = new CXFNonSpringServlet();
         cxf.setBus(bus);
         return cxf;
+    }
+
+    public void setPublishedEndpointUrlPrefix(String publishedEndpointUrlPrefix) {
+        this.publishedEndpointUrlPrefix = publishedEndpointUrlPrefix;
     }
 
     public void setInstrumentedInvokerBuilder(InstrumentedInvokerFactory instrumentedInvokerBuilder) {

@@ -30,8 +30,8 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
     };
 
     // JAX-WS Bundle
-    private JAXWSBundle jaxWsBundle = new JAXWSBundle();
-    private JAXWSBundle anotherJaxWsBundle = new JAXWSBundle("/api2");
+    private JAXWSBundle<Object> jaxWsBundle = new JAXWSBundle<>();
+    private JAXWSBundle<Object> anotherJaxWsBundle = new JAXWSBundle<>("/api2");
 
     public static void main(String[] args) throws Exception {
         new JaxWsExampleApplication().run(args);
