@@ -13,6 +13,7 @@ public class EndpointBuilder extends AbstractBuilder {
 
     private String path;
     private Object service;
+    private String publishedEndpointUrl;
     SessionFactory sessionFactory;
     BasicAuthentication authentication;
 
@@ -22,6 +23,10 @@ public class EndpointBuilder extends AbstractBuilder {
 
     public Object getService() {
         return service;
+    }
+
+    public String publishedEndpointUrl() {
+        return publishedEndpointUrl;
     }
 
     public SessionFactory getSessionFactory() {
@@ -102,5 +107,10 @@ public class EndpointBuilder extends AbstractBuilder {
     @Override
     public EndpointBuilder enableMtom() {
         return (EndpointBuilder)super.enableMtom();
+    }
+
+    public EndpointBuilder publishedEndpointUrl(String publishedEndpointUrl) {
+        this.publishedEndpointUrl = publishedEndpointUrl;
+        return this;
     }
 }

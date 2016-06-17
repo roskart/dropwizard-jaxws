@@ -3,6 +3,8 @@ package com.roskart.dropwizard.jaxws;
 import ch.qos.logback.classic.Level;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.WSDLGetUtils;
+import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
@@ -12,6 +14,7 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.test.TestUtilities;
+import org.apache.cxf.transport.AbstractDestination;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transport.local.LocalTransportFactory;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
@@ -27,6 +30,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.wsdl.WSDLException;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
@@ -260,6 +264,56 @@ public class JAXWSEnvironmentTest {
         assertThat(mimeMultipart.getCount(), equalTo(1));
         testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse",
                 StaxUtils.read(mimeMultipart.getBodyPart(0).getInputStream()));
+    }
+
+    @Test
+    public void publishEndpointWithCustomPublishedUrl() throws Exception {
+        jaxwsEnvironment.publishEndpoint(
+                new EndpointBuilder("local://path", service)
+                        .publishedEndpointUrl("http://external.server/external/path")
+        );
+
+        verify(mockInvokerBuilder).create(any(), any(Invoker.class));
+        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+
+        Server server = testutils.getServerForAddress("local://path");
+        AbstractDestination destination = (AbstractDestination) server.getDestination();
+        String publishedEndpointUrl = destination.getEndpointInfo().getProperty(WSDLGetUtils.PUBLISHED_ENDPOINT_URL, String.class);
+
+        assertThat(publishedEndpointUrl, equalTo("http://external.server/external/path"));
+    }
+
+    @Test
+    public void publishEndpointWithPublishedUrlPrefix() throws WSDLException {
+        jaxwsEnvironment = new JAXWSEnvironment("soap", "http://external/prefix") {
+            @Override
+            protected BasicAuthenticationInterceptor createBasicAuthenticationInterceptor() {
+                return new BasicAuthenticationInterceptor() {
+                    @Override
+                    public void handleMessage(Message message) throws Fault {
+                        mockBasicAuthInterceptorInvoked++;
+                    }
+                };
+            }
+        };
+
+        testutils.setBus(jaxwsEnvironment.bus);
+        jaxwsEnvironment.setUnitOfWorkInvokerBuilder(mockUnitOfWorkInvokerBuilder);
+        jaxwsEnvironment.setInstrumentedInvokerBuilder(mockInvokerBuilder);
+
+
+        jaxwsEnvironment.publishEndpoint(
+                new EndpointBuilder("/path", service)
+        );
+
+        verify(mockInvokerBuilder).create(any(), any(Invoker.class));
+        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+
+        Server server = testutils.getServerForAddress("/path");
+        AbstractDestination destination = (AbstractDestination) server.getDestination();
+        String publishedEndpointUrl = destination.getEndpointInfo().getProperty(WSDLGetUtils.PUBLISHED_ENDPOINT_URL, String.class);
+
+        assertThat(publishedEndpointUrl, equalTo("http://external/prefix/path"));
     }
 
     @Test
