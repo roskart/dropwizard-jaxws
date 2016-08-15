@@ -61,7 +61,7 @@ public class JAXWSBundleTest {
         JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
 
         try {
-            jaxwsBundle.run(null);
+            jaxwsBundle.run(null, null);
         }
         catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
@@ -70,10 +70,37 @@ public class JAXWSBundleTest {
         jaxwsBundle.initialize(bootstrap);
         verify(jaxwsEnvironment).setInstrumentedInvokerBuilder(any(InstrumentedInvokerFactory.class));
 
-        jaxwsBundle.run(environment);
+        jaxwsBundle.run(null, environment);
         verify(servletEnvironment).addServlet(startsWith("CXF Servlet"), any(Servlet.class));
         verify(lifecycleEnvironment).addServerLifecycleListener(any(ServerLifecycleListener.class));
         verify(servlet).addMapping("/soap/*");
+        verify(jaxwsEnvironment, never()).setPublishedEndpointUrlPrefix(anyString());
+    }
+
+    @Test
+    public void initializeAndRunWithPublishedEndpointUrlPrefix() {
+        JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment) {
+            @Override
+            protected String getPublishedEndpointUrlPrefix(Object configuration) {
+                return "http://some/prefix";
+            }
+        };
+
+        try {
+            jaxwsBundle.run(null, null);
+        }
+        catch (Exception e) {
+            assertThat(e, is(instanceOf(IllegalArgumentException.class)));
+        }
+
+        jaxwsBundle.initialize(bootstrap);
+        verify(jaxwsEnvironment).setInstrumentedInvokerBuilder(any(InstrumentedInvokerFactory.class));
+
+        jaxwsBundle.run(null, environment);
+        verify(servletEnvironment).addServlet(startsWith("CXF Servlet"), any(Servlet.class));
+        verify(lifecycleEnvironment).addServerLifecycleListener(any(ServerLifecycleListener.class));
+        verify(servlet).addMapping("/soap/*");
+        verify(jaxwsEnvironment).setPublishedEndpointUrlPrefix("http://some/prefix");
     }
 
     @Test

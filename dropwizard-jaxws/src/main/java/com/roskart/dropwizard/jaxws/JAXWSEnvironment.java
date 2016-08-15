@@ -18,9 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
+
+import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -35,6 +38,7 @@ public class JAXWSEnvironment {
     protected final String defaultPath;
     private InstrumentedInvokerFactory instrumentedInvokerBuilder;
     private UnitOfWorkInvokerFactory unitOfWorkInvokerBuilder = new UnitOfWorkInvokerFactory();
+    private String publishedEndpointUrlPrefix;
 
     public String getDefaultPath() {
         return this.defaultPath;
@@ -58,6 +62,10 @@ public class JAXWSEnvironment {
         CXFNonSpringServlet cxf = new CXFNonSpringServlet();
         cxf.setBus(bus);
         return cxf;
+    }
+
+    public void setPublishedEndpointUrlPrefix(String publishedEndpointUrlPrefix) {
+        this.publishedEndpointUrlPrefix = publishedEndpointUrlPrefix;
     }
 
     public void setInstrumentedInvokerBuilder(InstrumentedInvokerFactory instrumentedInvokerBuilder) {
@@ -98,6 +106,12 @@ public class JAXWSEnvironment {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
 
         EndpointImpl cxfendpoint = new EndpointImpl(bus, endpointBuilder.getService());
+        if(endpointBuilder.publishedEndpointUrl() != null) {
+            cxfendpoint.setPublishedEndpointUrl(endpointBuilder.publishedEndpointUrl());
+        }
+        else if(publishedEndpointUrlPrefix != null) {
+            cxfendpoint.setPublishedEndpointUrl(publishedEndpointUrlPrefix + endpointBuilder.getPath());
+        }
         cxfendpoint.publish(endpointBuilder.getPath());
 
         // MTOM support

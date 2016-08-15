@@ -15,6 +15,7 @@ public class EndpointBuilderTest {
     public void buildEndpoint() {
         Object service = new Object();
         String path = "/foo";
+        String publishedUrl = "http://external/url";
         BasicAuthentication basicAuth = mock(BasicAuthentication.class);
         SessionFactory sessionFactory = mock(SessionFactory.class);
         Interceptor<? extends Message> inInterceptor = mock(Interceptor.class);
@@ -23,6 +24,7 @@ public class EndpointBuilderTest {
         Interceptor<? extends Message> outFaultInterceptor = mock(Interceptor.class);
 
         EndpointBuilder builder = new EndpointBuilder(path, service)
+                .publishedEndpointUrl(publishedUrl)
                 .authentication(basicAuth)
                 .sessionFactory(sessionFactory)
                 .cxfInInterceptors(inInterceptor, inInterceptor)
@@ -32,6 +34,7 @@ public class EndpointBuilderTest {
 
         assertThat(builder.getPath(), equalTo(path));
         assertThat(builder.getService(), equalTo(service));
+        assertThat(builder.publishedEndpointUrl(), equalTo(publishedUrl));
         assertThat(builder.getAuthentication(), equalTo(basicAuth));
         assertThat(builder.getSessionFactory(), equalTo(sessionFactory));
         assertThat(builder.getCxfInInterceptors(), contains(inInterceptor, inInterceptor));

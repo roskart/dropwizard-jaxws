@@ -1,6 +1,6 @@
 package com.roskart.dropwizard.jaxws;
 
-import io.dropwizard.Bundle;
+import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.lifecycle.ServerLifecycleListener;
@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * A Dropwizard bundle that enables Dropwizard applications to publish SOAP web services using JAX-WS and create
  * web service clients.
  */
-public class JAXWSBundle implements Bundle {
+public class JAXWSBundle<C> implements ConfiguredBundle<C> {
 
     protected static final String DEFAULT_PATH = "/soap";
     protected JAXWSEnvironment jaxwsEnvironment;
@@ -62,7 +62,7 @@ public class JAXWSBundle implements Bundle {
      * Implements com.yammer.dropwizard.Bundle#run()
      */
     @Override
-    public void run(Environment environment) {
+    public void run(C configuration, Environment environment) {
         checkArgument(environment != null, "Environment is null");
         environment.servlets().addServlet("CXF Servlet " + jaxwsEnvironment.getDefaultPath(),
                 jaxwsEnvironment.buildServlet()).addMapping(servletPath);
@@ -72,6 +72,11 @@ public class JAXWSBundle implements Bundle {
                 jaxwsEnvironment.logEndpoints();
             }
         });
+
+        String publishedEndpointUrlPrefix = getPublishedEndpointUrlPrefix(configuration);
+        if(publishedEndpointUrlPrefix != null) {
+            jaxwsEnvironment.setPublishedEndpointUrlPrefix(publishedEndpointUrlPrefix);
+        }
     }
 
     /**
@@ -170,5 +175,18 @@ public class JAXWSBundle implements Bundle {
     public <T> T getClient(ClientBuilder<T> clientBuilder) {
         checkArgument(clientBuilder != null, "ClientBuilder is null");
         return jaxwsEnvironment.getClient(clientBuilder);
+    }
+
+    /**
+     * Extract the published endpoint URL prefix from the application configuration and return it to use the returned
+     * value as the location of services in the published WSDLs.
+     *
+     * Override this method to configure the bundle.
+     *
+     * @param configuration Application configuration.
+     * @return Published endpoint URL prefix.
+     */
+    protected String getPublishedEndpointUrlPrefix(C configuration) {
+        return null;
     }
 }
