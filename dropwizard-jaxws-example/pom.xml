@@ -36,6 +36,14 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-hibernate</artifactId>
             <version>${dropwizard.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- Exclude JTA 1.1 API from jackson-datatype-hibernate5 to prevent duplicate class -->
+                    <!-- warnings when building fat jar (hibernate-core also depends on JTA 1.1 API). -->
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>jta</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

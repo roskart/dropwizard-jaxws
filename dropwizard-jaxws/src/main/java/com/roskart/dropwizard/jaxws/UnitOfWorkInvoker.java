@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.context.internal.ManagedSessionContext;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 /**
  * Wraps underlying invoker in a Hibernate session. Code in this class is based on Dropwizard's UnitOfWorkApplication
@@ -86,7 +87,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     private void rollbackTransaction(Session session, UnitOfWork unitOfWork) {
         if (unitOfWork.transactional()) {
             final Transaction txn = session.getTransaction();
-            if (txn != null && txn.isActive()) {
+            if (txn != null && txn.getStatus().equals(TransactionStatus.ACTIVE)) {
                 txn.rollback();
             }
         }
@@ -98,7 +99,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     private void commitTransaction(Session session, UnitOfWork unitOfWork) {
         if (unitOfWork.transactional()) {
             final Transaction txn = session.getTransaction();
-            if (txn != null && txn.isActive()) {
+            if (txn != null && txn.getStatus().equals(TransactionStatus.ACTIVE)) {
                 txn.commit();
             }
         }

@@ -102,7 +102,6 @@ public class EndpointBuilder extends AbstractBuilder {
 
     /**
      * Invoking enableMTOM is not necessary if you use @MTOM JAX-WS annotation on your service implementation class.
-     * @return
      */
     @Override
     public EndpointBuilder enableMtom() {

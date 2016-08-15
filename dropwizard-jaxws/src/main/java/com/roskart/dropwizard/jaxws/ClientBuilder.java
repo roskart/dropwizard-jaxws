@@ -111,6 +111,7 @@ public class ClientBuilder<T> extends AbstractBuilder {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClientBuilder<T> enableMtom() {
         return (ClientBuilder<T>)super.enableMtom();
     }

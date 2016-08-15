@@ -1,6 +1,5 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.google.common.base.Optional;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.apache.cxf.common.security.SecurityToken;
@@ -20,9 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A CXF interceptor that manages HTTP Basic Authentication. Implementation is based on combination of
@@ -79,7 +76,6 @@ public class BasicAuthenticationInterceptor extends AbstractPhaseInterceptor<Mes
         }
         catch (AuthenticationException ae) {
             sendErrorResponse(message, HttpURLConnection.HTTP_FORBIDDEN);
-            return;
         }
     }
 
@@ -90,8 +86,8 @@ public class BasicAuthenticationInterceptor extends AbstractPhaseInterceptor<Mes
         @SuppressWarnings("unchecked")
         Map<String, List<String>> responseHeaders = (Map)message.get(Message.PROTOCOL_HEADERS);
         if (responseHeaders != null) {
-            responseHeaders.put("WWW-Authenticate", Arrays.asList("Basic realm=" + authentication.getRealm()));
-            responseHeaders.put("Content-length", Arrays.<String>asList("0"));
+            responseHeaders.put("WWW-Authenticate", Collections.singletonList("Basic realm=" + authentication.getRealm()));
+            responseHeaders.put("Content-length", Collections.singletonList("0"));
         }
         message.getInterceptorChain().abort();
         try {

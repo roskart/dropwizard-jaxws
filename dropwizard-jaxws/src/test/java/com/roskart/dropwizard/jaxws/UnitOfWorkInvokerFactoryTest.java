@@ -8,6 +8,7 @@ import org.apache.cxf.service.model.OperationInfo;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,7 +75,7 @@ public class UnitOfWorkInvokerFactoryTest {
         when(sessionFactory.openSession()).thenReturn(session);
         transaction = mock(Transaction.class);
         when(session.getTransaction()).thenReturn(transaction);
-        when(transaction.isActive()).thenReturn(true);
+        when(transaction.getStatus()).thenReturn(TransactionStatus.ACTIVE);
     }
 
     /**

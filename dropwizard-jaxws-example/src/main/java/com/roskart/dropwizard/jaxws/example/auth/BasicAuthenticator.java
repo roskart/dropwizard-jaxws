@@ -1,10 +1,11 @@
 package com.roskart.dropwizard.jaxws.example.auth;
 
-import com.google.common.base.Optional;
 import com.roskart.dropwizard.jaxws.example.core.User;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
+
+import java.util.Optional;
 
 /**
  * BasicAuthenticator is copied from dropwizard-example.

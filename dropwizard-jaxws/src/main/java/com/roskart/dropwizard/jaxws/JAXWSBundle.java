@@ -3,8 +3,6 @@ package com.roskart.dropwizard.jaxws;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.dropwizard.lifecycle.ServerLifecycleListener;
-import org.eclipse.jetty.server.Server;
 import org.hibernate.SessionFactory;
 
 import javax.xml.ws.handler.Handler;
@@ -66,12 +64,9 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
         checkArgument(environment != null, "Environment is null");
         environment.servlets().addServlet("CXF Servlet " + jaxwsEnvironment.getDefaultPath(),
                 jaxwsEnvironment.buildServlet()).addMapping(servletPath);
-        environment.lifecycle().addServerLifecycleListener(new ServerLifecycleListener() {
-            @Override
-            public void serverStarted(Server server) {
-                jaxwsEnvironment.logEndpoints();
-            }
-        });
+
+        environment.lifecycle().addServerLifecycleListener(
+                server -> jaxwsEnvironment.logEndpoints());
 
         String publishedEndpointUrlPrefix = getPublishedEndpointUrlPrefix(configuration);
         if(publishedEndpointUrlPrefix != null) {
@@ -163,7 +158,7 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
         checkArgument(address != null, "Address is null");
         checkArgument((address).trim().length() > 0, "Address is empty");
         return jaxwsEnvironment.getClient(
-                new ClientBuilder<T>(serviceClass, address).handlers(handlers));
+                new ClientBuilder<>(serviceClass, address).handlers(handlers));
     }
 
     /**

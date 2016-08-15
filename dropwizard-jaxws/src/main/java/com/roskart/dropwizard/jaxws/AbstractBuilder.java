@@ -89,7 +89,6 @@ public abstract class AbstractBuilder {
 
     /**
      * Enable MTOM for binary attachments.
-     * @return
      */
     public AbstractBuilder enableMtom() {
         this.mtomEnabled = true;
