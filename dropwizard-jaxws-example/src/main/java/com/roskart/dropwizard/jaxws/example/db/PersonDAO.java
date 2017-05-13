@@ -20,14 +20,15 @@ public class PersonDAO extends AbstractDAO<Person> {
 
         Session sess = sessionFactory.openSession();
         try {
-            sess.createSQLQuery("create table people(id bigint primary key auto_increment not null, " +
+            sess.beginTransaction();
+            sess.createNativeQuery("create table people(id bigint primary key auto_increment not null, " +
                     "fullname varchar(256) not null, jobtitle varchar(256) not null);").executeUpdate();
-            sess.createSQLQuery("create sequence hibernate_sequence").executeUpdate();
+            sess.createNativeQuery("create sequence hibernate_sequence").executeUpdate();
         }
         finally {
+            sess.getTransaction().commit();
             sess.close();
         }
-
     }
 
     public Optional<Person> findById(Long id) {

@@ -18,12 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
-
-import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
