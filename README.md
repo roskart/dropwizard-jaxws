@@ -149,6 +149,8 @@ Changelog
 ### v1.0.3
 
 - Support for providing a property bag to JAX-WS endpoint (see Issue #13).
+- Upgraded to Dropwizard 1.2.1.
+- Upgraded to CXF 3.2.1.
 
 ### v1.0.2
 
