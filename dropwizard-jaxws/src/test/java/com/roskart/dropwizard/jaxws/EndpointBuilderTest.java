@@ -5,6 +5,9 @@ import org.apache.cxf.message.Message;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,6 +25,8 @@ public class EndpointBuilderTest {
         Interceptor<? extends Message> inFaultInterceptor = mock(Interceptor.class);
         Interceptor<? extends Message> outInterceptor = mock(Interceptor.class);
         Interceptor<? extends Message> outFaultInterceptor = mock(Interceptor.class);
+        Map<String, Object> props = new HashMap<>();
+        props.put("key", "value");
 
         EndpointBuilder builder = new EndpointBuilder(path, service)
                 .publishedEndpointUrl(publishedUrl)
@@ -30,7 +35,8 @@ public class EndpointBuilderTest {
                 .cxfInInterceptors(inInterceptor, inInterceptor)
                 .cxfInFaultInterceptors(inFaultInterceptor, inFaultInterceptor)
                 .cxfOutInterceptors(outInterceptor, outInterceptor)
-                .cxfOutFaultInterceptors(outFaultInterceptor, outFaultInterceptor);
+                .cxfOutFaultInterceptors(outFaultInterceptor, outFaultInterceptor)
+                .properties(props);
 
         assertThat(builder.getPath(), equalTo(path));
         assertThat(builder.getService(), equalTo(service));
@@ -41,5 +47,6 @@ public class EndpointBuilderTest {
         assertThat(builder.getCxfInFaultInterceptors(), contains(inFaultInterceptor, inFaultInterceptor));
         assertThat(builder.getCxfOutInterceptors(), contains(outInterceptor, outInterceptor));
         assertThat(builder.getCxfOutFaultInterceptors(), contains(outFaultInterceptor, outFaultInterceptor));
+        assertThat(builder.getProperties().get("key"), equalTo("value"));
     }
 }

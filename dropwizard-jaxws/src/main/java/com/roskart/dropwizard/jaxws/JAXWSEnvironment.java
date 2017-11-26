@@ -19,6 +19,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
 
@@ -97,9 +98,9 @@ public class JAXWSEnvironment {
     }
 
     /**
-     * Publish JAX-WS server side endpoint.
+     * Publish JAX-WS server side endpoint. Returns javax.xml.ws.Endpoint to enable further customization.
      */
-    public void publishEndpoint(EndpointBuilder endpointBuilder) {
+    public Endpoint publishEndpoint(EndpointBuilder endpointBuilder) {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
 
         EndpointImpl cxfendpoint = new EndpointImpl(bus, endpointBuilder.getService());
@@ -158,6 +159,13 @@ public class JAXWSEnvironment {
         if (endpointBuilder.getCxfOutFaultInterceptors() != null) {
             cxfendpoint.getOutFaultInterceptors().addAll(endpointBuilder.getCxfOutFaultInterceptors());
         }
+
+        if (endpointBuilder.getProperties() != null) {
+            cxfendpoint.getProperties().putAll(
+                    endpointBuilder.getProperties());
+        }
+
+        return cxfendpoint;
     }
 
     /**

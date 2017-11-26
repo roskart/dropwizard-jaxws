@@ -4,6 +4,8 @@ import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Message;
 import org.hibernate.SessionFactory;
 
+import java.util.Map;
+
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -16,6 +18,7 @@ public class EndpointBuilder extends AbstractBuilder {
     private String publishedEndpointUrl;
     SessionFactory sessionFactory;
     BasicAuthentication authentication;
+    Map<String, Object> properties;
 
     public String getPath() {
         return path;
@@ -35,6 +38,10 @@ public class EndpointBuilder extends AbstractBuilder {
 
     public BasicAuthentication getAuthentication() {
         return authentication;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     /**
@@ -88,7 +95,7 @@ public class EndpointBuilder extends AbstractBuilder {
 
     @Override
     @SafeVarargs
-    @SuppressWarnings("unchecked")
+
     public final EndpointBuilder cxfOutInterceptors(Interceptor<? extends Message>... interceptors) {
         return (EndpointBuilder)super.cxfOutInterceptors(interceptors);
     }
@@ -110,6 +117,14 @@ public class EndpointBuilder extends AbstractBuilder {
 
     public EndpointBuilder publishedEndpointUrl(String publishedEndpointUrl) {
         this.publishedEndpointUrl = publishedEndpointUrl;
+        return this;
+    }
+
+    /**
+     * Provide a property bag to be supplied to the JAX-WS endpoint.
+     */
+    public EndpointBuilder properties(Map<String, Object> properties) {
+        this.properties = properties;
         return this;
     }
 }

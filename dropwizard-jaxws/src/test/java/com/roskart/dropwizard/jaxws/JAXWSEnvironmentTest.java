@@ -32,16 +32,19 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.wsdl.WSDLException;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
 
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.*;
 
 public class JAXWSEnvironmentTest {
@@ -136,7 +139,8 @@ public class JAXWSEnvironmentTest {
     @Test
     public void publishEndpoint() throws Exception {
 
-        jaxwsEnvironment.publishEndpoint(new EndpointBuilder("local://path", service));
+        Endpoint e = jaxwsEnvironment.publishEndpoint(new EndpointBuilder("local://path", service));
+        assertThat(e, is(notNullValue()));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
         verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
@@ -268,6 +272,7 @@ public class JAXWSEnvironmentTest {
 
     @Test
     public void publishEndpointWithCustomPublishedUrl() throws Exception {
+
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
                         .publishedEndpointUrl("http://external.server/external/path")
@@ -281,6 +286,30 @@ public class JAXWSEnvironmentTest {
         String publishedEndpointUrl = destination.getEndpointInfo().getProperty(WSDLGetUtils.PUBLISHED_ENDPOINT_URL, String.class);
 
         assertThat(publishedEndpointUrl, equalTo("http://external.server/external/path"));
+    }
+
+    @Test
+    public void publishEndpointWithProperties() throws Exception {
+
+        HashMap<String, Object> props = new HashMap<>();
+        props.put("key", "value");
+
+        Endpoint e = jaxwsEnvironment.publishEndpoint(
+                new EndpointBuilder("local://path", service)
+                    .properties(props));
+
+        assertThat(e, is(notNullValue()));
+        assertThat(e.getProperties().get("key"), equalTo("value"));
+
+        verify(mockInvokerBuilder).create(any(), any(Invoker.class));
+        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+
+        Node soapResponse = testutils.invoke("local://path",
+                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+
+        verify(mockInvoker).invoke(any(Exchange.class), any());
+
+        testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse", soapResponse);
     }
 
     @Test
@@ -326,6 +355,7 @@ public class JAXWSEnvironmentTest {
 
     @Test
     public void getClient() {
+
         String address = "http://address";
         Handler handler = mock(Handler.class);
 
@@ -344,7 +374,7 @@ public class JAXWSEnvironmentTest {
         assertThat(httpclient.getConnectionTimeout(), equalTo(500L));
         assertThat(httpclient.getReceiveTimeout(), equalTo(2000L));
 
-        // with timeouts, handlers, interceptors and MTOM
+        // with timeouts, handlers, interceptors, properties and MTOM
 
         TestInterceptor inInterceptor = new TestInterceptor(Phase.UNMARSHAL);
         TestInterceptor inInterceptor2 = new TestInterceptor(Phase.PRE_INVOKE);
