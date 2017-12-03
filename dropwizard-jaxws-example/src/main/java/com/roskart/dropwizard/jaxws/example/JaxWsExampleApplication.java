@@ -19,6 +19,8 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import ws.example.jaxws.dropwizard.roskart.com.mtomservice.MtomService;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;
 
+import javax.xml.ws.Endpoint;
+
 public class JaxWsExampleApplication extends Application<JaxWsExampleApplicationConfiguration> {
 
     // HibernateBundle is used by HibernateExampleService
@@ -48,40 +50,43 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
     public void run(JaxWsExampleApplicationConfiguration jaxWsExampleApplicationConfiguration, Environment environment) throws Exception {
 
         // Hello world service
-        jaxWsBundle.publishEndpoint(
+        Endpoint e = jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/simple", new SimpleService()));
 
+        // publishEndpoint returns javax.xml.ws.Endpoint to enable further customization.
+        // e.getProperties().put(...);
+
         // Publish Hello world service again using different JAXWSBundle instance
-        anotherJaxWsBundle.publishEndpoint(
+        e = anotherJaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/simple", new SimpleService()));
 
         // Java first service protected with basic authentication
-        jaxWsBundle.publishEndpoint(
+        e = jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/javafirst", new JavaFirstServiceImpl())
                     .authentication(new BasicAuthentication(new BasicAuthenticator(), "TOP_SECRET")));
 
         // WSDL first service using server side JAX-WS handler and CXF logging interceptors
-        jaxWsBundle.publishEndpoint(
+        e = jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/wsdlfirst", new WsdlFirstServiceImpl())
                     .cxfInInterceptors(new LoggingInInterceptor())
                     .cxfOutInterceptors(new LoggingOutInterceptor()));
 
         // Service using Hibernate
         PersonDAO personDAO = new PersonDAO(hibernate.getSessionFactory());
-        jaxWsBundle.publishEndpoint(
+        e = jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/hibernate",
                         new HibernateExampleService(personDAO))
                         .sessionFactory(hibernate.getSessionFactory()));
 
         // Publish the same service again using different JAXWSBundle instance
-        anotherJaxWsBundle.publishEndpoint(
+        e = anotherJaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/hibernate",
                         new HibernateExampleService(personDAO))
                         .sessionFactory(hibernate.getSessionFactory()));
 
         // WSDL first service using MTOM. Invoking enableMTOM on EndpointBuilder is not necessary
         // if you use @MTOM JAX-WS annotation on your service implementation class.
-        jaxWsBundle.publishEndpoint(
+        e = jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/mtom", new MtomServiceImpl())
                     .enableMtom()
         );

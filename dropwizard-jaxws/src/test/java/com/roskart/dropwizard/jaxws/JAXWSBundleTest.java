@@ -112,7 +112,6 @@ public class JAXWSBundleTest {
             jaxwsBundle.publishEndpoint(new EndpointBuilder("foo", null));
             fail();
         }
-
         catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }

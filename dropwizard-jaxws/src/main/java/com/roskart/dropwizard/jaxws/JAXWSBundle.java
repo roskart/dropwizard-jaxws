@@ -5,6 +5,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
 
+import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -77,21 +78,23 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
     /**
      * Publish JAX-WS endpoint. Endpoint will be published relative to the CXF servlet path.
      * @param endpointBuilder EndpointBuilder.
+     * @return javax.xml.ws.Endpoint
      */
-     public void publishEndpoint(EndpointBuilder endpointBuilder) {
+     public Endpoint publishEndpoint(EndpointBuilder endpointBuilder) {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
-        this.jaxwsEnvironment.publishEndpoint(endpointBuilder);
+        return this.jaxwsEnvironment.publishEndpoint(endpointBuilder);
     }
 
     /**
      * Publish JAX-WS endpoint. Endpoint is published relative to the CXF servlet path.
      * @param path Relative endpoint path.
      * @param service Service implementation.
+     * @return javax.xml.ws.Endpoint
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public void publishEndpoint(String path, Object service) {
-        this.publishEndpoint(path, service, null, null);
+    public Endpoint publishEndpoint(String path, Object service) {
+        return this.publishEndpoint(path, service, null, null);
     }
 
     /**
@@ -100,11 +103,12 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      * @param path Relative endpoint path.
      * @param service Service implementation.
      * @param sessionFactory Hibernate session factory.
+     * @return javax.xml.ws.Endpoint
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public void publishEndpoint(String path, Object service, SessionFactory sessionFactory) {
-        this.publishEndpoint(path, service, null, sessionFactory);
+    public Endpoint publishEndpoint(String path, Object service, SessionFactory sessionFactory) {
+        return this.publishEndpoint(path, service, null, sessionFactory);
     }
 
     /**
@@ -113,11 +117,12 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      * @param path Relative endpoint path.
      * @param service Service implementation.
      * @param authentication BasicAuthentication implementation.
+     * @return javax.xml.ws.Endpoint
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public void publishEndpoint(String path, Object service, BasicAuthentication authentication) {
-        this.publishEndpoint(path, service, authentication, null);
+    public Endpoint publishEndpoint(String path, Object service, BasicAuthentication authentication) {
+        return this.publishEndpoint(path, service, authentication, null);
     }
 
     /**
@@ -128,15 +133,16 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      * @param service Service implementation.
      * @param auth BasicAuthentication implementation.
      * @param sessionFactory Hibernate session factory.
+     * @return javax.xml.ws.Endpoint
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public void publishEndpoint(String path, Object service, BasicAuthentication auth,
+    public Endpoint publishEndpoint(String path, Object service, BasicAuthentication auth,
                                 SessionFactory sessionFactory) {
         checkArgument(service != null, "Service is null");
         checkArgument(path != null, "Path is null");
         checkArgument((path).trim().length() > 0, "Path is empty");
-        this.publishEndpoint(new EndpointBuilder(path, service)
+        return this.publishEndpoint(new EndpointBuilder(path, service)
                 .authentication(auth)
                 .sessionFactory(sessionFactory)
         );
