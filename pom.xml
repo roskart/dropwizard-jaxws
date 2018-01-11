@@ -3,21 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-    <artifactId>dropwizard-jaxws-parent</artifactId>
-    <version>1.0.4</version>
+	<parent>
+		<groupId>de.fundstech.microservices.tools</groupId>
+		<artifactId>dwtools-parent</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+	</parent>
+	
+    <groupId>de.fundstech.microservices.tools</groupId>
+    <artifactId>dwtools-jaxws-parent</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    
     <packaging>pom</packaging>
     <name>Dropwizard JAX-WS</name>
     <description>
         Dropwizard-JAXWS is a Dropwizard Bundle that enables building SOAP web services and clients
         using JAX-WS API with Dropwizard.
     </description>
-    <url>https://github.com/roskart/dropwizard-jaxws</url>
+<!--     <url>https://github.com/roskart/dropwizard-jaxws</url> -->
 
     <modules>
-        <module>dropwizard-jaxws</module>
-        <module>dropwizard-jaxws-example</module>
+        <module>dwtools-jaxws</module>
+        <module>dwtools-jaxws-example</module>
     </modules>
 
     <properties>
@@ -29,33 +35,33 @@
 
     </properties>
 
-    <developers>
-        <developer>
-            <name>Tadej Roškar</name>
-            <email>tadejr@gmail.com</email>
-            <timezone>+1</timezone>
-            <organizationUrl>https://github.com/roskart</organizationUrl>
-        </developer>
-    </developers>
+<!--     <developers> -->
+<!--         <developer> -->
+<!--             <name>Tadej Roškar</name> -->
+<!--             <email>tadejr@gmail.com</email> -->
+<!--             <timezone>+1</timezone> -->
+<!--             <organizationUrl>https://github.com/roskart</organizationUrl> -->
+<!--         </developer> -->
+<!--     </developers> -->
 
-    <licenses>
-        <license>
-            <name>Apache License 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-            <distribution>manual</distribution>
-        </license>
-    </licenses>
+<!--     <licenses> -->
+<!--         <license> -->
+<!--             <name>Apache License 2.0</name> -->
+<!--             <url>http://www.apache.org/licenses/LICENSE-2.0.html</url> -->
+<!--             <distribution>manual</distribution> -->
+<!--         </license> -->
+<!--     </licenses> -->
 
-    <scm>
-        <connection>scm:git:git@github.com:roskart/dropwizard-jaxws.git</connection>
-        <developerConnection>scm:git:git@github.com:roskart/dropwizard-jaxws.git</developerConnection>
-        <url>git@github.com:roskart/dropwizard-jaxws.git</url>
-    </scm>
+<!--     <scm> -->
+<!--         <connection>scm:git:git@github.com:roskart/dropwizard-jaxws.git</connection> -->
+<!--         <developerConnection>scm:git:git@github.com:roskart/dropwizard-jaxws.git</developerConnection> -->
+<!--         <url>git@github.com:roskart/dropwizard-jaxws.git</url> -->
+<!--     </scm> -->
 
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/roskart/dropwizard-jaxws/issues</url>
-    </issueManagement>
+<!--     <issueManagement> -->
+<!--         <system>GitHub</system> -->
+<!--         <url>https://github.com/roskart/dropwizard-jaxws/issues</url> -->
+<!--     </issueManagement> -->
 
 <!--     <distributionManagement> -->
 <!--         <snapshotRepository> -->

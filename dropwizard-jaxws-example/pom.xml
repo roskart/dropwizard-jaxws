@@ -3,11 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dropwizard-jaxws-parent</artifactId>
-        <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-        <version>1.0.4</version>
+        <groupId>de.fundstech.microservices.tools</groupId>
+		<artifactId>dwtools-jaxws-parent</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
+    <modelVersion>${project.version</modelVersion>
 
     <artifactId>dropwizard-jaxws-example</artifactId>
     <name>Dropwizard JAX-WS Example Application</name>
@@ -15,8 +15,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-            <artifactId>dropwizard-jaxws</artifactId>
+           <groupId>de.fundstech.microservices.tools</groupId>
+            <artifactId>dwtools-jaxws</artifactId>
             <version>${project.version}</version>
         </dependency>
 
