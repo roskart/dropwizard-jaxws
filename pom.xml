@@ -22,8 +22,8 @@
 <!--     <url>https://github.com/roskart/dropwizard-jaxws</url> -->
 
     <modules>
-        <module>dwtools-jaxws</module>
-        <module>dwtools-jaxws-example</module>
+        <module>dropwizard-jaxws</module>
+        <module>dropwizard-jaxws-example</module>
     </modules>
 
     <properties>

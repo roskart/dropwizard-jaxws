@@ -9,7 +9,7 @@
 	</parent>
     <modelVersion>${project.version</modelVersion>
 
-    <artifactId>dwtools-jaxws</artifactId>
+    <artifactId>dropwizard-jaxws</artifactId>
     <name>Dropwizard JAX-WS Bundle</name>
 
     <dependencies>

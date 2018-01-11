@@ -16,7 +16,7 @@
 
         <dependency>
            <groupId>de.fundstech.microservices.tools</groupId>
-            <artifactId>dwtools-jaxws</artifactId>
+            <artifactId>dropwizard-jaxws</artifactId>
             <version>${project.version}</version>
         </dependency>
 
