@@ -1,0 +1,2 @@
+#!groovy
+buildJar {}
