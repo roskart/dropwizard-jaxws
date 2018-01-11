@@ -10,6 +10,7 @@ import org.apache.cxf.message.Message;
 public abstract class AbstractBuilder {
 
     protected boolean mtomEnabled = false;
+    protected String  wsdlLocation;
     protected ImmutableList<Interceptor<? extends Message>> cxfInInterceptors;
     protected ImmutableList<Interceptor<? extends Message>> cxfInFaultInterceptors;
     protected ImmutableList<Interceptor<? extends Message>> cxfOutInterceptors;

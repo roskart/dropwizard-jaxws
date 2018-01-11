@@ -112,6 +112,11 @@ public class JAXWSEnvironment {
         }
         cxfendpoint.publish(endpointBuilder.getPath());
 
+        // Explicitely set the wsdl location
+        if(endpointBuilder.wsdlLocation() != null) {
+        	cxfendpoint.setWsdlLocation(endpointBuilder.wsdlLocation());
+        }
+        
         // MTOM support
         if (endpointBuilder.isMtomEnabled()) {
             ((SOAPBinding)cxfendpoint.getBinding()).setMTOMEnabled(true);

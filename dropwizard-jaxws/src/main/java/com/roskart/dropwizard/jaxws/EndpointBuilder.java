@@ -32,6 +32,10 @@ public class EndpointBuilder extends AbstractBuilder {
         return publishedEndpointUrl;
     }
 
+    public String wsdlLocation(){
+    	return wsdlLocation;
+    }
+    
     public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
@@ -119,7 +123,14 @@ public class EndpointBuilder extends AbstractBuilder {
         this.publishedEndpointUrl = publishedEndpointUrl;
         return this;
     }
-
+    /**
+     * Specifically setting the WSDL Location is not recommended if you are also setting the attribute "wsdlLocation" in the @WebService
+     * Annotation of your service implementation class.
+     */
+    public EndpointBuilder wsdlLocation(String wsdlLocation){
+    	this.wsdlLocation = wsdlLocation;
+    	return this;
+    }
     /**
      * Provide a property bag to be supplied to the JAX-WS endpoint.
      */
