@@ -110,12 +110,14 @@ public class JAXWSEnvironment {
         else if(publishedEndpointUrlPrefix != null) {
             cxfendpoint.setPublishedEndpointUrl(publishedEndpointUrlPrefix + endpointBuilder.getPath());
         }
-        cxfendpoint.publish(endpointBuilder.getPath());
-
         // Explicitely set the wsdl location
         if(endpointBuilder.wsdlLocation() != null) {
         	cxfendpoint.setWsdlLocation(endpointBuilder.wsdlLocation());
         }
+        
+        cxfendpoint.publish(endpointBuilder.getPath());
+
+       
         
         // MTOM support
         if (endpointBuilder.isMtomEnabled()) {
