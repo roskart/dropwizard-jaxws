@@ -18,6 +18,7 @@ public class ClientBuilder<T> extends AbstractBuilder {
     private int connectTimeout = 500;
     private int receiveTimeout = 2000;
     ImmutableList<Handler> handlers;
+    String bindingId;
 
     public Class<T> getServiceClass() {
         return serviceClass;
@@ -37,6 +38,10 @@ public class ClientBuilder<T> extends AbstractBuilder {
 
     public ImmutableList<Handler> getHandlers() {
         return handlers;
+    }
+
+    public String getBindingId() {
+        return bindingId;
     }
 
     /**
@@ -79,6 +84,16 @@ public class ClientBuilder<T> extends AbstractBuilder {
      */
     public ClientBuilder<T> handlers(Handler... handlers) {
         this.handlers = ImmutableList.<Handler>builder().add(handlers).build();
+        return this;
+    }
+
+    /**
+     * Set ClientProxyFactoryBean bindingId.
+     * @param bindingId bindingId.
+     * @return ClientBuilder instance.
+     */
+    public ClientBuilder<T> bindingId(String bindingId) {
+        this.bindingId = bindingId;
         return this;
     }
 

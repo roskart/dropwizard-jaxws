@@ -187,6 +187,11 @@ public class JAXWSEnvironment {
             }
         }
 
+        // ClientProxyFactoryBean bindingId
+        if (clientBuilder.getBindingId() != null) {
+            proxyFactory.setBindingId(clientBuilder.getBindingId());
+        }
+
         // CXF interceptors
         if (clientBuilder.getCxfInInterceptors() != null) {
             proxyFactory.getInInterceptors().addAll(clientBuilder.getCxfInInterceptors());

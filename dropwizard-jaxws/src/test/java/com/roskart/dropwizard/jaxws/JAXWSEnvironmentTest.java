@@ -2,6 +2,7 @@ package com.roskart.dropwizard.jaxws;
 
 import ch.qos.logback.classic.Level;
 import org.apache.cxf.Bus;
+import org.apache.cxf.binding.soap.SoapBindingFactory;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.endpoint.Server;
@@ -385,10 +386,12 @@ public class JAXWSEnvironmentTest {
                         .connectTimeout(123)
                         .receiveTimeout(456)
                         .handlers(handler)
+                        .bindingId(SoapBindingFactory.SOAP_12_BINDING)
                         .cxfInInterceptors(inInterceptor, inInterceptor2)
                         .cxfOutInterceptors(outInterceptor)
                         .enableMtom());
         c = ClientProxy.getClient(clientProxy);
+        assertThat(((BindingProvider) clientProxy).getBinding().getBindingID(), equalTo("http://www.w3.org/2003/05/soap/bindings/HTTP/"));
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
 
