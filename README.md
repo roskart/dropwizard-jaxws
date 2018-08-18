@@ -146,6 +146,11 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 Changelog
 ---------
 
+### v1.0.5
+
+- Added possibility to set binding id on client proxy factory (see Issue #14)
+- Upgraded to CXF 3.2.6 (see Issue #17)
+
 ### v1.0.4
 
 - JAXWSBundle now returns JAX-WS endpoint (see Issue #13).
