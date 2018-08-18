@@ -24,7 +24,7 @@ To use dropwizard-jaxws in your project, add the following dependency to your `p
         <dependency>
             <groupId>com.github.roskart.dropwizard-jaxws</groupId>
             <artifactId>dropwizard-jaxws</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
 
 Hello World
@@ -116,7 +116,7 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-1.0.4.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-1.0.5.jar server dropwizard-jaxws-example\config.yaml
 
 Notes
 -----
@@ -149,6 +149,7 @@ Changelog
 ### v1.0.5
 
 - Added possibility to set binding id on client proxy factory (see Issue #14)
+- Upgraded to Dropwizard 1.3.5 (see Pull request #16)
 - Upgraded to CXF 3.2.6 (see Issue #17)
 
 ### v1.0.4

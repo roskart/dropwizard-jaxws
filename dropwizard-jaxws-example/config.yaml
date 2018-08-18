@@ -4,3 +4,8 @@ database:
   user: sa
   password: sa
   validationQuery: "/* HibernateExampleService Health Check */ SELECT 1"
+logging:
+  level: INFO
+  loggers:
+    org.hibernate:
+      level: WARN
