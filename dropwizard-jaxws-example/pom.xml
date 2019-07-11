@@ -57,6 +57,13 @@
             <artifactId>mail</artifactId>
             <version>1.4.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>javax.jws-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
