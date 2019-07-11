@@ -50,7 +50,7 @@ public class BasicAuthenticationInterceptor extends AbstractPhaseInterceptor<Mes
 
         try {
             AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
-            if (policy != null) {
+            if (policy != null && policy.getUserName() != null && policy.getPassword() != null) {
                 credentials = new BasicCredentials(policy.getUserName(), policy.getPassword());
             } else {
                 // try the WS-Security UsernameToken
