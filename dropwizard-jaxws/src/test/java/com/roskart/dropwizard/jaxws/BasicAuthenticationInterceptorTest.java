@@ -64,6 +64,17 @@ public class BasicAuthenticationInterceptorTest {
     }
 
     @Test
+    public void shouldReturnUnathorizedCodeForInvalidCredentials() {
+        BasicAuthenticationInterceptor target = new BasicAuthenticationInterceptor();
+        target.setAuthenticator(basicAuthentication);
+        Message message = createMessageWithUsernameAndPassword(USERNAME, "foo");
+
+        target.handleMessage(message);
+
+        verify(outMessageMock).put(Message.RESPONSE_CODE, HttpURLConnection.HTTP_UNAUTHORIZED);
+    }
+
+    @Test
     public void shouldNotCrashOnNullPassword() {
         BasicAuthenticationInterceptor target = new BasicAuthenticationInterceptor();
         target.setAuthenticator(basicAuthentication);

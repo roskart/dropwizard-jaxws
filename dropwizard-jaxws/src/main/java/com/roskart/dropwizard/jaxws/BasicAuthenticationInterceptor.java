@@ -69,13 +69,18 @@ public class BasicAuthenticationInterceptor extends AbstractPhaseInterceptor<Mes
             Optional<?> principal = authentication.getAuthenticator().authenticate(
                     new BasicCredentials(credentials.getUsername(), credentials.getPassword()));
 
+            if (!principal.isPresent()) {
+                sendErrorResponse(message, HttpURLConnection.HTTP_UNAUTHORIZED);
+                return;
+            }
+
             // principal will be available through JAX-WS WebServiceContext
             if (principal.isPresent()) {
                 exchange.getInMessage().put(PRINCIPAL_KEY, principal.get());
             }
         }
         catch (AuthenticationException ae) {
-            sendErrorResponse(message, HttpURLConnection.HTTP_FORBIDDEN);
+            sendErrorResponse(message, HttpURLConnection.HTTP_INTERNAL_ERROR);
         }
     }
 
