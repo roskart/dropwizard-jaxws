@@ -148,14 +148,16 @@ Changelog
 
 ### v1.1.0
 
-- Invalid username or password returns 403 status code (see Issue #20)
-- Null pointer on missing credentials (see Pull request #19)
+- Invalid username or password returns 403 status code (see Issue #20).
+- Null pointer on missing credentials (see Pull request #19).
+- Upgraded to Dropwizard 1.3.13.
+- Upgraded to CXF 3.2.9.
 
 ### v1.0.5
 
-- Added possibility to set binding id on client proxy factory (see Issue #14)
-- Upgraded to Dropwizard 1.3.5 (see Pull request #16)
-- Upgraded to CXF 3.2.6 (see Issue #17)
+- Added possibility to set binding id on client proxy factory (see Issue #14).
+- Upgraded to Dropwizard 1.3.5 (see Pull request #16).
+- Upgraded to CXF 3.2.6 (see Issue #17).
 
 ### v1.0.4
 
