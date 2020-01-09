@@ -1,6 +1,5 @@
 package com.roskart.dropwizard.jaxws;
 
-import com.google.common.collect.ImmutableList;
 import io.dropwizard.validation.Validated;
 import io.dropwizard.validation.ConstraintViolations;
 import org.apache.cxf.helpers.CastUtils;
@@ -15,6 +14,7 @@ import javax.validation.ValidationException;
 import javax.validation.groups.Default;
 import javax.xml.ws.AsyncHandler;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -80,7 +80,7 @@ public class ValidatingInvoker extends AbstractInvoker {
         final Class<?>[] classes = findValidationGroups(annotations);
 
         if (classes != null) {
-            final ImmutableList<String> errors = ConstraintViolations.format(
+            final Collection<String> errors = ConstraintViolations.format(
                     validator.validate(value, classes));
 
             if (!errors.isEmpty()) {
