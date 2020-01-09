@@ -5,6 +5,7 @@ import com.roskart.dropwizard.jaxws.example.core.Person;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -40,6 +41,9 @@ public class PersonDAO extends AbstractDAO<Person> {
     }
 
     public List<Person> findAll() {
-        return list(namedQuery("com.roskart.dropwizard.jaxws.example.core.Person.findAll"));
+        @SuppressWarnings("unchecked")
+        Query<Person> query =
+                (Query<Person>) namedQuery("com.roskart.dropwizard.jaxws.example.core.Person.findAll");
+        return list(query);
     }
 }
