@@ -8,19 +8,18 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.OperationInfo;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.validation.Validation;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import javax.validation.constraints.NotEmpty;
 import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Response;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -188,5 +187,4 @@ public class ValidatingInvokerTest {
 
         verify(underlying).invoke(exchange, params);
     }
-
 }

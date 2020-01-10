@@ -78,7 +78,7 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
     private void configureSession(Session session, UnitOfWork unitOfWork) {
         session.setDefaultReadOnly(unitOfWork.readOnly());
         session.setCacheMode(unitOfWork.cacheMode());
-        session.setFlushMode(unitOfWork.flushMode());
+        session.setHibernateFlushMode(unitOfWork.flushMode());
     }
 
     /**

@@ -3,9 +3,8 @@
  */
 package com.roskart.dropwizard.jaxws.example.core;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * See dropwizard-example: com.example.helloworld.core.Person

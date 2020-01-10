@@ -1,7 +1,6 @@
 package com.roskart.dropwizard.jaxws;
 
 import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.message.Message;
 import org.junit.Test;
 
 import javax.xml.ws.handler.Handler;
@@ -16,12 +15,12 @@ public class ClientBuilderTest {
     @Test
     public void buildClient() {
 
-        Handler handler = mock(Handler.class);
+        Handler<?> handler = mock(Handler.class);
 
-        Interceptor<? extends Message> inInterceptor = mock(Interceptor.class);
-        Interceptor<? extends Message> inFaultInterceptor = mock(Interceptor.class);
-        Interceptor<? extends Message> outInterceptor = mock(Interceptor.class);
-        Interceptor<? extends Message> outFaultInterceptor = mock(Interceptor.class);
+        Interceptor<?> inInterceptor = mock(Interceptor.class);
+        Interceptor<?> inFaultInterceptor = mock(Interceptor.class);
+        Interceptor<?> outInterceptor = mock(Interceptor.class);
+        Interceptor<?> outFaultInterceptor = mock(Interceptor.class);
 
         ClientBuilder<Object> builder = new ClientBuilder<>(Object.class, "address")
                 .connectTimeout(1234)
@@ -38,9 +37,9 @@ public class ClientBuilderTest {
         assertThat(builder.getConnectTimeout(), equalTo(1234));
         assertThat(builder.getReceiveTimeout(), equalTo(5678));
         assertThat(builder.getBindingId(), equalTo("binding id"));
-        assertThat(builder.getCxfInInterceptors(), contains(inInterceptor, inInterceptor));
-        assertThat(builder.getCxfInFaultInterceptors(), contains(inFaultInterceptor, inFaultInterceptor));
-        assertThat(builder.getCxfOutInterceptors(), contains(outInterceptor, outInterceptor));
-        assertThat(builder.getCxfOutFaultInterceptors(), contains(outFaultInterceptor, outFaultInterceptor));
+        assertThat(builder.getCxfInInterceptors(), contains(new Interceptor<?>[]{ inInterceptor, inInterceptor }));
+        assertThat(builder.getCxfInFaultInterceptors(), contains(new Interceptor<?>[]{ inFaultInterceptor, inFaultInterceptor }));
+        assertThat(builder.getCxfOutInterceptors(), contains(new Interceptor<?>[]{ outInterceptor, outInterceptor }));
+        assertThat(builder.getCxfOutFaultInterceptors(), contains(new Interceptor<?>[]{ outFaultInterceptor, outFaultInterceptor }));
     }
 }

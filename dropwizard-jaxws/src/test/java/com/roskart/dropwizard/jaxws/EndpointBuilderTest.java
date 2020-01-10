@@ -1,7 +1,6 @@
 package com.roskart.dropwizard.jaxws;
 
 import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.message.Message;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 
@@ -21,10 +20,10 @@ public class EndpointBuilderTest {
         String publishedUrl = "http://external/url";
         BasicAuthentication basicAuth = mock(BasicAuthentication.class);
         SessionFactory sessionFactory = mock(SessionFactory.class);
-        Interceptor<? extends Message> inInterceptor = mock(Interceptor.class);
-        Interceptor<? extends Message> inFaultInterceptor = mock(Interceptor.class);
-        Interceptor<? extends Message> outInterceptor = mock(Interceptor.class);
-        Interceptor<? extends Message> outFaultInterceptor = mock(Interceptor.class);
+        Interceptor<?> inInterceptor = mock(Interceptor.class);
+        Interceptor<?> inFaultInterceptor = mock(Interceptor.class);
+        Interceptor<?> outInterceptor = mock(Interceptor.class);
+        Interceptor<?> outFaultInterceptor = mock(Interceptor.class);
         Map<String, Object> props = new HashMap<>();
         props.put("key", "value");
 
@@ -43,10 +42,10 @@ public class EndpointBuilderTest {
         assertThat(builder.publishedEndpointUrl(), equalTo(publishedUrl));
         assertThat(builder.getAuthentication(), equalTo(basicAuth));
         assertThat(builder.getSessionFactory(), equalTo(sessionFactory));
-        assertThat(builder.getCxfInInterceptors(), contains(inInterceptor, inInterceptor));
-        assertThat(builder.getCxfInFaultInterceptors(), contains(inFaultInterceptor, inFaultInterceptor));
-        assertThat(builder.getCxfOutInterceptors(), contains(outInterceptor, outInterceptor));
-        assertThat(builder.getCxfOutFaultInterceptors(), contains(outFaultInterceptor, outFaultInterceptor));
+        assertThat(builder.getCxfInInterceptors(), contains(new Interceptor<?>[]{ inInterceptor, inInterceptor }));
+        assertThat(builder.getCxfInFaultInterceptors(), contains(new Interceptor<?>[]{ inFaultInterceptor, inFaultInterceptor }));
+        assertThat(builder.getCxfOutInterceptors(), contains(new Interceptor<?>[]{ outInterceptor, outInterceptor }));
+        assertThat(builder.getCxfOutFaultInterceptors(), contains(new Interceptor<?>[]{ outFaultInterceptor, outFaultInterceptor }));
         assertThat(builder.getProperties().get("key"), equalTo("value"));
     }
 }

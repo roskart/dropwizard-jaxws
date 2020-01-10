@@ -1,6 +1,7 @@
 package com.roskart.dropwizard.jaxws;
 
 import com.codahale.metrics.MetricRegistry;
+import io.dropwizard.Configuration;
 import io.dropwizard.lifecycle.ServerLifecycleListener;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Bootstrap;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 public class JAXWSBundleTest {
 
     Environment environment = mock(Environment.class);
-    Bootstrap bootstrap = mock(Bootstrap.class);
+    Bootstrap<?> bootstrap = mock(Bootstrap.class);
     ServletEnvironment servletEnvironment = mock(ServletEnvironment.class);
     ServletRegistration.Dynamic servlet = mock(ServletRegistration.Dynamic.class);
     JAXWSEnvironment jaxwsEnvironment = mock(JAXWSEnvironment.class);
@@ -40,7 +41,7 @@ public class JAXWSBundleTest {
     @Test
     public void constructorArgumentChecks() {
         try {
-            new JAXWSBundle(null, null);
+            new JAXWSBundle<>(null, null);
             fail();
         }
         catch (Exception e) {
@@ -48,7 +49,7 @@ public class JAXWSBundleTest {
         }
 
         try {
-            new JAXWSBundle("soap", null);
+            new JAXWSBundle<>("soap", null);
             fail();
         }
         catch (Exception e) {
@@ -58,7 +59,7 @@ public class JAXWSBundleTest {
 
     @Test
     public void initializeAndRun() {
-        JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
+        JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<>("/soap", jaxwsEnvironment);
 
         try {
             jaxwsBundle.run(null, null);
@@ -79,9 +80,9 @@ public class JAXWSBundleTest {
 
     @Test
     public void initializeAndRunWithPublishedEndpointUrlPrefix() {
-        JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment) {
+        JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<Configuration>("/soap", jaxwsEnvironment) {
             @Override
-            protected String getPublishedEndpointUrlPrefix(Object configuration) {
+            protected String getPublishedEndpointUrlPrefix(Configuration configuration) {
                 return "http://some/prefix";
             }
         };
@@ -106,7 +107,7 @@ public class JAXWSBundleTest {
     @Test
     public void publishEndpoint() {
 
-        JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
+        JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<>("/soap", jaxwsEnvironment);
         Object service = new Object();
         try {
             jaxwsBundle.publishEndpoint(new EndpointBuilder("foo", null));
@@ -140,7 +141,7 @@ public class JAXWSBundleTest {
     @Test
     public void getClient() {
 
-        JAXWSBundle jaxwsBundle = new JAXWSBundle("/soap", jaxwsEnvironment);
+        JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<>("/soap", jaxwsEnvironment);
 
         Class<?> cls = Object.class;
         String url = "http://foo";
@@ -170,7 +171,7 @@ public class JAXWSBundleTest {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
-        ClientBuilder builder = new ClientBuilder<>(cls, url);
+        ClientBuilder<?> builder = new ClientBuilder<>(cls, url);
         jaxwsBundle.getClient(builder);
         verify(jaxwsEnvironment).getClient(builder);
     }
