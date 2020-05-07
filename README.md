@@ -116,7 +116,7 @@ After cloning the repository, go to the dropwizard-jaxws root folder and run:
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-1.2.0.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-1.2.1-SNAPSHOT.jar server dropwizard-jaxws-example\config.yaml
 
 Notes
 -----
@@ -145,6 +145,11 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 
 Changelog
 ---------
+
+### v1.2.1
+
+- Upgraded to CXF 3.3.6 (see Issue #25).
+- Upgraded to Dropwizard 2.0.9 (see Issue #25).
 
 ### v1.2.0
 
