@@ -58,13 +58,7 @@ public class JAXWSEnvironmentTest {
     UnitOfWorkInvokerFactory mockUnitOfWorkInvokerBuilder = mock(UnitOfWorkInvokerFactory.class);
     private int mockBasicAuthInterceptorInvoked;
 
-    private String soapRequest = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-            "xmlns:res=\"http://jaxws.dropwizard.roskart.com/\">" +
-                "<soapenv:Header/>" +
-                "<soapenv:Body>" +
-                    "<res:foo></res:foo>" +
-                "</soapenv:Body>" +
-            "</soapenv:Envelope>";
+    private String soapRequest = "test-soap-request.xml";
 
     // DummyInterface is used by getClient test
     @WebService
@@ -147,7 +141,7 @@ public class JAXWSEnvironmentTest {
         verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
 
@@ -170,7 +164,7 @@ public class JAXWSEnvironmentTest {
         verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
 
@@ -188,7 +182,7 @@ public class JAXWSEnvironmentTest {
         verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
 
@@ -208,7 +202,7 @@ public class JAXWSEnvironmentTest {
         verify(mockUnitOfWorkInvokerBuilder).create(any(), any(Invoker.class), any(SessionFactory.class));
 
         Node soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
 
@@ -230,7 +224,7 @@ public class JAXWSEnvironmentTest {
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
 
         Node soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
         assertThat(inInterceptor.getInvocationCount(), equalTo(1));
@@ -240,7 +234,7 @@ public class JAXWSEnvironmentTest {
         testutils.assertValid("/soap:Envelope/soap:Body/a:fooResponse", soapResponse);
 
         soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker, times(2)).invoke(any(Exchange.class), any());
         assertThat(inInterceptor.getInvocationCount(), equalTo(2));
@@ -260,7 +254,7 @@ public class JAXWSEnvironmentTest {
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
 
-        byte[] response = testutils.invokeBytes("local://path", LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+        byte[] response = testutils.invokeBytes("local://path", LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
 
@@ -306,7 +300,7 @@ public class JAXWSEnvironmentTest {
         verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
-                LocalTransportFactory.TRANSPORT_ID, soapRequest.getBytes());
+                LocalTransportFactory.TRANSPORT_ID, soapRequest);
 
         verify(mockInvoker).invoke(any(Exchange.class), any());
 
