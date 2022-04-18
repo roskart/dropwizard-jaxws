@@ -1,0 +1,7 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:res="http://jaxws.dropwizard.roskart.com/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <res:foo></res:foo>
+    </soapenv:Body>
+</soapenv:Envelope>
