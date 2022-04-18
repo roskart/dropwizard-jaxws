@@ -6,7 +6,7 @@
 
     <groupId>com.github.roskart.dropwizard-jaxws</groupId>
     <artifactId>dropwizard-jaxws-parent</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <packaging>pom</packaging>
     <name>Dropwizard JAX-WS</name>
     <description>
