@@ -44,11 +44,9 @@ class UnitOfWorkInvokerFactoryTest {
 
     public class UnitOfWorkInvoker implements Invoker {
         private boolean doThrow = false;
-
         public UnitOfWorkInvoker(boolean doThrow) {
             this.doThrow = doThrow;
         }
-
         @Override
         public Object invoke(Exchange exchange, Object o) {
             return fooService.unitOfWork(doThrow);
@@ -91,7 +89,8 @@ class UnitOfWorkInvokerFactoryTest {
             OperationInfo oi = exchange.getBindingOperationInfo().getOperationInfo();
             when(oi.getProperty(Method.class.getName()))
                     .thenReturn(FooService.class.getMethod(methodName, parameterTypes));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("setTargetMethod failed: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
@@ -132,7 +131,8 @@ class UnitOfWorkInvokerFactoryTest {
 
         try {
             invoker.invoke(exchange, null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertEquals("Uh oh", e.getMessage());
         }
 

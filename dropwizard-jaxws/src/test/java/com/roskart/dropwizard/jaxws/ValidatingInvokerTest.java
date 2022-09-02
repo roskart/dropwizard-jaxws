@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 public class ValidatingInvokerTest {
+
     ValidatingInvoker invoker;
     Invoker underlying;
     Exchange exchange;
@@ -34,12 +35,10 @@ public class ValidatingInvokerTest {
     class ChildParam {
         @NotEmpty
         private final String foo;
-
         public ChildParam(String foo) {
             this.foo = foo;
         }
-
-        @ValidationMethod(message = "foo may not be 'John'")
+        @ValidationMethod(message="foo may not be 'John'")
         public boolean isNotJohn() {
             return !("John".equals(foo));
         }
@@ -57,7 +56,6 @@ public class ValidatingInvokerTest {
     class RootParam2 {
         @NotEmpty
         private final String foo;
-
         public RootParam2(String foo) {
             this.foo = foo;
         }
@@ -66,20 +64,15 @@ public class ValidatingInvokerTest {
     class DummyService {
         public void noParams() {
         }
-
         public void noValidation(RootParam1 rootParam1, RootParam2 rootParam2) {
         }
-
         public void withValidation(@Valid RootParam1 rootParam1, @Valid RootParam2 rootParam2) {
         }
-
         public void withDropwizardValidation(@Validated() String foo) {
         }
-
         @UseAsyncMethod
         public void asyncMethod(String foo) {
         }
-
         public void asyncMethodAsync(String foo, AsyncHandler asyncHandler) {
         }
     }
@@ -105,7 +98,8 @@ public class ValidatingInvokerTest {
             OperationInfo oi = exchange.getBindingOperationInfo().getOperationInfo();
             when(oi.getProperty(Method.class.getName()))
                     .thenReturn(DummyService.class.getMethod(methodName, parameterTypes));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("setTargetMethod failed: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
@@ -157,7 +151,8 @@ public class ValidatingInvokerTest {
         try {
             invoker.invoke(exchange, params);
             fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             assertThat(e, is(instanceOf(ValidationException.class)));
         }
 
@@ -165,7 +160,8 @@ public class ValidatingInvokerTest {
         try {
             invoker.invoke(exchange, params);
             fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             assertThat(e, is(instanceOf(ValidationException.class)));
         }
 
@@ -173,7 +169,8 @@ public class ValidatingInvokerTest {
         try {
             invoker.invoke(exchange, params);
             fail();
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             assertThat(e, is(instanceOf(ValidationException.class)));
         }
 

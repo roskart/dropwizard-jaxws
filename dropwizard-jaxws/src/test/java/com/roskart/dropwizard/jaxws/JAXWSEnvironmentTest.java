@@ -36,6 +36,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
+
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
@@ -68,15 +69,12 @@ public class JAXWSEnvironmentTest {
     // TestInterceptor is used for testing CXF interceptors
     class TestInterceptor extends AbstractPhaseInterceptor<Message> {
         private int invocationCount = 0;
-
         public TestInterceptor(String phase) {
             super(phase);
         }
-
         public int getInvocationCount() {
             return this.invocationCount;
         }
-
         @Override
         public void handleMessage(Message message) throws Fault {
             invocationCount++;
@@ -86,7 +84,7 @@ public class JAXWSEnvironmentTest {
     @BeforeEach
     public void setup() {
 
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.apache.cxf")).setLevel(Level.INFO);
+        ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("org.apache.cxf")).setLevel(Level.INFO);
 
         jaxwsEnvironment = new JAXWSEnvironment("soap") {
             /*
@@ -176,7 +174,7 @@ public class JAXWSEnvironmentTest {
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
-                        .authentication(mock(BasicAuthentication.class)));
+                    .authentication(mock(BasicAuthentication.class)));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
         verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
@@ -196,7 +194,7 @@ public class JAXWSEnvironmentTest {
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
-                        .sessionFactory(mock(SessionFactory.class)));
+                    .sessionFactory(mock(SessionFactory.class)));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
         verify(mockUnitOfWorkInvokerBuilder).create(any(), any(Invoker.class), any(SessionFactory.class));
@@ -291,7 +289,7 @@ public class JAXWSEnvironmentTest {
 
         Endpoint e = jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
-                        .properties(props));
+                    .properties(props));
 
         assertThat(e, is(notNullValue()));
         assertThat(e.getProperties().get("key"), equalTo("value"));
@@ -331,17 +329,20 @@ public class JAXWSEnvironmentTest {
 
         try {
             jaxwsEnvironment.publishEndpoint(new EndpointBuilder("foo", null));
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
 
         try {
             jaxwsEnvironment.publishEndpoint(new EndpointBuilder(null, service));
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
 
         try {
             jaxwsEnvironment.publishEndpoint(new EndpointBuilder("   ", service));
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
         }
     }
 
@@ -360,9 +361,9 @@ public class JAXWSEnvironmentTest {
         Client c = ClientProxy.getClient(clientProxy);
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
-        assertThat(((BindingProvider) clientProxy).getBinding().getHandlerChain().size(), equalTo(0));
+        assertThat(((BindingProvider)clientProxy).getBinding() .getHandlerChain().size(), equalTo(0));
 
-        HTTPClientPolicy httpclient = ((HTTPConduit) c.getConduit()).getClient();
+        HTTPClientPolicy httpclient = ((HTTPConduit)c.getConduit()).getClient();
         assertThat(httpclient.getConnectionTimeout(), equalTo(500L));
         assertThat(httpclient.getReceiveTimeout(), equalTo(2000L));
 
@@ -386,14 +387,14 @@ public class JAXWSEnvironmentTest {
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
 
-        httpclient = ((HTTPConduit) c.getConduit()).getClient();
+        httpclient = ((HTTPConduit)c.getConduit()).getClient();
         assertThat(httpclient.getConnectionTimeout(), equalTo(123L));
         assertThat(httpclient.getReceiveTimeout(), equalTo(456L));
 
-        assertThat(((BindingProvider) clientProxy).getBinding().getHandlerChain(), contains(handler));
+        assertThat(((BindingProvider)clientProxy).getBinding().getHandlerChain(), contains(handler));
 
-        BindingProvider bp = (BindingProvider) clientProxy;
-        SOAPBinding binding = (SOAPBinding) bp.getBinding();
+        BindingProvider bp = (BindingProvider)clientProxy;
+        SOAPBinding binding = (SOAPBinding)bp.getBinding();
         assertThat(binding.isMTOMEnabled(), equalTo(true));
     }
 }

@@ -146,6 +146,14 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 Changelog
 ---------
 
+### v2.0.0
+
+- Upgraded to Java 17 target
+- Upgraded to CXF 3.5.3
+- Upgraded to Dropwizard 2.1.1
+- Migrated unit tests to JUnit Jupiter 5.9.0
+- Move from mockito-all to mockito-core 4.7.0
+
 ### v1.2.3
 
 - Upgraded to CXF 3.5.2 (see Issue #33).

@@ -45,7 +45,8 @@ public class InstrumentedInvokerFactoryTest {
         public String exceptionMetered(boolean doThrow) {
             if (doThrow) {
                 throw new RuntimeException("Runtime exception occured");
-            } else {
+            }
+            else {
                 return "exceptionMeteredReturn";
             }
         }
@@ -82,12 +83,10 @@ public class InstrumentedInvokerFactoryTest {
     }
 
     public class ExceptionMeteredInvoker implements Invoker {
-        private final boolean doThrow;
-
+        private boolean doThrow;
         public ExceptionMeteredInvoker(boolean doThrow) {
             this.doThrow = doThrow;
         }
-
         @Override
         public Object invoke(Exchange exchange, Object o) {
             return instrumentedService.exceptionMetered(doThrow);
@@ -104,7 +103,8 @@ public class InstrumentedInvokerFactoryTest {
             OperationInfo oi = exchange.getBindingOperationInfo().getOperationInfo();
             when(oi.getProperty(Method.class.getName()))
                     .thenReturn(InstrumentedService.class.getMethod(methodName, parameterTypes));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             fail("setTargetMethod failed: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
@@ -222,7 +222,8 @@ public class InstrumentedInvokerFactoryTest {
         try {
             invoker.invoke(exchange, null);
             fail("Exception shall be thrown here");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertThat(e, is(instanceOf(RuntimeException.class)));
         }
 
