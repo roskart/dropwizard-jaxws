@@ -153,6 +153,7 @@ Changelog
 - Upgraded to Dropwizard 2.1.1
 - Migrated unit tests to JUnit Jupiter 5.9.0
 - Move from mockito-all to mockito-core 4.7.0
+- Move to Java Optional from Google
 
 ### v1.2.3
 
