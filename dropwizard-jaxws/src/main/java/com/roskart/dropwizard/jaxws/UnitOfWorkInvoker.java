@@ -37,10 +37,8 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
 
         if (unitOfWorkMethods.containsKey(methodname)) {
 
-            final Session session = sessionFactory.openSession();
-            UnitOfWork unitOfWork = unitOfWorkMethods.get(methodname);
-
-            try {
+            try (Session session = sessionFactory.openSession()) {
+                UnitOfWork unitOfWork = unitOfWorkMethods.get(methodname);
                 configureSession(session, unitOfWork);
                 ManagedSessionContext.bind(session);
                 beginTransaction(session, unitOfWork);
@@ -54,7 +52,6 @@ public class UnitOfWorkInvoker extends AbstractInvoker {
                     return null; // avoid compiler warning
                 }
             } finally {
-                session.close();
                 ManagedSessionContext.unbind(sessionFactory);
             }
         }

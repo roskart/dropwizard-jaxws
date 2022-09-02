@@ -1,25 +1,26 @@
 package com.roskart.dropwizard.jaxws;
 
+import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.Timer;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.OperationInfo;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
 
 public class InstrumentedInvokerFactoryTest {
 
@@ -44,8 +45,7 @@ public class InstrumentedInvokerFactoryTest {
         public String exceptionMetered(boolean doThrow) {
             if (doThrow) {
                 throw new RuntimeException("Runtime exception occured");
-            }
-            else {
+            } else {
                 return "exceptionMeteredReturn";
             }
         }
@@ -82,10 +82,12 @@ public class InstrumentedInvokerFactoryTest {
     }
 
     public class ExceptionMeteredInvoker implements Invoker {
-        private boolean doThrow;
+        private final boolean doThrow;
+
         public ExceptionMeteredInvoker(boolean doThrow) {
             this.doThrow = doThrow;
         }
+
         @Override
         public Object invoke(Exchange exchange, Object o) {
             return instrumentedService.exceptionMetered(doThrow);
@@ -102,13 +104,12 @@ public class InstrumentedInvokerFactoryTest {
             OperationInfo oi = exchange.getBindingOperationInfo().getOperationInfo();
             when(oi.getProperty(Method.class.getName()))
                     .thenReturn(InstrumentedService.class.getMethod(methodName, parameterTypes));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail("setTargetMethod failed: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         exchange = mock(Exchange.class);
 
@@ -126,7 +127,7 @@ public class InstrumentedInvokerFactoryTest {
     }
 
     @Test
-    public void noAnnotation() {
+    void noAnnotation() {
 
         Timer timer = testMetricRegistry.timer("timed");
         Meter meter = testMetricRegistry.meter("metered");
@@ -147,7 +148,7 @@ public class InstrumentedInvokerFactoryTest {
     }
 
     @Test
-    public void meteredAnnotation() {
+    void meteredAnnotation() {
 
         Timer timer = testMetricRegistry.timer("timed");
         Meter meter = testMetricRegistry.meter("metered");
@@ -168,7 +169,7 @@ public class InstrumentedInvokerFactoryTest {
     }
 
     @Test
-    public void timedAnnotation() {
+    void timedAnnotation() {
 
         Timer timer = testMetricRegistry.timer("timed");
         Meter meter = testMetricRegistry.meter("metered");
@@ -189,7 +190,7 @@ public class InstrumentedInvokerFactoryTest {
     }
 
     @Test
-    public void exceptionMeteredAnnotation() {
+    void exceptionMeteredAnnotation() {
 
         Timer timer = testMetricRegistry.timer("timed");
         Meter meter = testMetricRegistry.meter("metered");
@@ -221,8 +222,7 @@ public class InstrumentedInvokerFactoryTest {
         try {
             invoker.invoke(exchange, null);
             fail("Exception shall be thrown here");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(RuntimeException.class)));
         }
 

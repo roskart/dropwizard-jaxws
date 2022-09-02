@@ -1,19 +1,19 @@
 package com.roskart.dropwizard.jaxws;
 
 import org.apache.cxf.interceptor.Interceptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.ws.handler.Handler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.mockito.Mockito.mock;
 
 public class ClientBuilderTest {
 
     @Test
-    public void buildClient() {
+    void buildClient() {
 
         Handler<?> handler = mock(Handler.class);
 
@@ -37,9 +37,9 @@ public class ClientBuilderTest {
         assertThat(builder.getConnectTimeout(), equalTo(1234));
         assertThat(builder.getReceiveTimeout(), equalTo(5678));
         assertThat(builder.getBindingId(), equalTo("binding id"));
-        assertThat(builder.getCxfInInterceptors(), contains(new Interceptor<?>[]{ inInterceptor, inInterceptor }));
-        assertThat(builder.getCxfInFaultInterceptors(), contains(new Interceptor<?>[]{ inFaultInterceptor, inFaultInterceptor }));
-        assertThat(builder.getCxfOutInterceptors(), contains(new Interceptor<?>[]{ outInterceptor, outInterceptor }));
-        assertThat(builder.getCxfOutFaultInterceptors(), contains(new Interceptor<?>[]{ outFaultInterceptor, outFaultInterceptor }));
+        assertThat(builder.getCxfInInterceptors(), contains(inInterceptor, inInterceptor));
+        assertThat(builder.getCxfInFaultInterceptors(), contains(inFaultInterceptor, inFaultInterceptor));
+        assertThat(builder.getCxfOutInterceptors(), contains(outInterceptor, outInterceptor));
+        assertThat(builder.getCxfOutFaultInterceptors(), contains(outFaultInterceptor, outFaultInterceptor));
     }
 }

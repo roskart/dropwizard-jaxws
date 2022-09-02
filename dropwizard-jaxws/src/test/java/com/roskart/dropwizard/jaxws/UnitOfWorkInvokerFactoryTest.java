@@ -9,21 +9,22 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
-public class UnitOfWorkInvokerFactoryTest {
+class UnitOfWorkInvokerFactoryTest {
 
-    class FooService {
+    static class FooService {
         public String foo() {
             return "foo return";
         }
+
         @UnitOfWork
         public String unitOfWork(boolean throwException) {
             if (throwException)
@@ -43,9 +44,11 @@ public class UnitOfWorkInvokerFactoryTest {
 
     public class UnitOfWorkInvoker implements Invoker {
         private boolean doThrow = false;
+
         public UnitOfWorkInvoker(boolean doThrow) {
             this.doThrow = doThrow;
         }
+
         @Override
         public Object invoke(Exchange exchange, Object o) {
             return fooService.unitOfWork(doThrow);
@@ -61,7 +64,7 @@ public class UnitOfWorkInvokerFactoryTest {
     // CXF Exchange contains message exchange and is used by Invoker to obtain invoked method name
     Exchange exchange;
 
-    @Before
+    @BeforeEach
     public void setup() {
         exchange = mock(Exchange.class);
         BindingOperationInfo boi = mock(BindingOperationInfo.class);
@@ -88,27 +91,26 @@ public class UnitOfWorkInvokerFactoryTest {
             OperationInfo oi = exchange.getBindingOperationInfo().getOperationInfo();
             when(oi.getProperty(Method.class.getName()))
                     .thenReturn(FooService.class.getMethod(methodName, parameterTypes));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail("setTargetMethod failed: " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
     @Test
-    public void noAnnotation() {
+    void noAnnotation() {
         Invoker invoker = invokerBuilder.create(fooService, new FooInvoker(), null);
         this.setTargetMethod(exchange, "foo"); // simulate CXF behavior
 
         Object result = invoker.invoke(exchange, null);
         assertEquals("foo return", result);
 
-        verifyZeroInteractions(sessionFactory);
-        verifyZeroInteractions(session);
-        verifyZeroInteractions(transaction);
+        verifyNoInteractions(sessionFactory);
+        verifyNoInteractions(session);
+        verifyNoInteractions(transaction);
     }
 
     @Test
-    public void unitOfWorkAnnotation() {
+    void unitOfWorkAnnotation() {
         // use underlying invoker which invokes fooService.unitOfWork(false)
         Invoker invoker = invokerBuilder.create(fooService, new UnitOfWorkInvoker(false), sessionFactory);
         this.setTargetMethod(exchange, "unitOfWork", boolean.class); // simulate CXF behavior
@@ -123,15 +125,14 @@ public class UnitOfWorkInvokerFactoryTest {
     }
 
     @Test
-    public void unitOfWorkWithException() {
+    void unitOfWorkWithException() {
         // use underlying invoker which invokes fooService.unitOfWork(true) - exception is thrown
         Invoker invoker = invokerBuilder.create(fooService, new UnitOfWorkInvoker(true), sessionFactory);
         this.setTargetMethod(exchange, "unitOfWork", boolean.class); // simulate CXF behavior
 
         try {
             invoker.invoke(exchange, null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertEquals("Uh oh", e.getMessage());
         }
 

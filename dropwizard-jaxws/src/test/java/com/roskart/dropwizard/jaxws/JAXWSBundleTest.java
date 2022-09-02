@@ -2,22 +2,22 @@ package com.roskart.dropwizard.jaxws;
 
 import com.codahale.metrics.MetricRegistry;
 import io.dropwizard.Configuration;
+import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.lifecycle.ServerLifecycleListener;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.dropwizard.jetty.setup.ServletEnvironment;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpServlet;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 public class JAXWSBundleTest {
@@ -29,7 +29,7 @@ public class JAXWSBundleTest {
     JAXWSEnvironment jaxwsEnvironment = mock(JAXWSEnvironment.class);
     LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(environment.servlets()).thenReturn(servletEnvironment);
         when(environment.lifecycle()).thenReturn(lifecycleEnvironment);
@@ -40,32 +40,29 @@ public class JAXWSBundleTest {
     }
 
     @Test
-    public void constructorArgumentChecks() {
+    void constructorArgumentChecks() {
         try {
             new JAXWSBundle<>(null, null);
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
         try {
             new JAXWSBundle<>("soap", null);
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
     }
 
     @Test
-    public void initializeAndRun() {
+    void initializeAndRun() {
         JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<>("/soap", jaxwsEnvironment);
 
         try {
             jaxwsBundle.run(null, null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
@@ -80,7 +77,7 @@ public class JAXWSBundleTest {
     }
 
     @Test
-    public void initializeAndRunWithPublishedEndpointUrlPrefix() {
+    void initializeAndRunWithPublishedEndpointUrlPrefix() {
         JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<Configuration>("/soap", jaxwsEnvironment) {
             @Override
             protected String getPublishedEndpointUrlPrefix(Configuration configuration) {
@@ -90,8 +87,7 @@ public class JAXWSBundleTest {
 
         try {
             jaxwsBundle.run(null, null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
@@ -106,31 +102,28 @@ public class JAXWSBundleTest {
     }
 
     @Test
-    public void publishEndpoint() {
+    void publishEndpoint() {
 
         JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<>("/soap", jaxwsEnvironment);
         Object service = new Object();
         try {
             jaxwsBundle.publishEndpoint(new EndpointBuilder("foo", null));
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
         try {
             jaxwsBundle.publishEndpoint(new EndpointBuilder(null, service));
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
         try {
             jaxwsBundle.publishEndpoint(new EndpointBuilder("   ", service));
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
@@ -140,7 +133,7 @@ public class JAXWSBundleTest {
     }
 
     @Test
-    public void getClient() {
+    void getClient() {
 
         JAXWSBundle<?> jaxwsBundle = new JAXWSBundle<>("/soap", jaxwsEnvironment);
 
@@ -150,25 +143,21 @@ public class JAXWSBundleTest {
         try {
             jaxwsBundle.getClient(new ClientBuilder<>(null, null));
             fail();
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
         try {
             jaxwsBundle.getClient(new ClientBuilder<>(null, url));
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 
         try {
             jaxwsBundle.getClient(new ClientBuilder<>(cls, "   "));
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IllegalArgumentException.class)));
         }
 

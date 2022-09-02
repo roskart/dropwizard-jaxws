@@ -1,16 +1,6 @@
 package com.roskart.dropwizard.jaxws;
 
-import static com.roskart.dropwizard.jaxws.BasicAuthenticationInterceptor.PRINCIPAL_KEY;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.roskart.dropwizard.jaxws.auth.BasicAuthenticator;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.security.Principal;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.interceptor.InterceptorChain;
 import org.apache.cxf.message.Exchange;
@@ -19,10 +9,22 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.Destination;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.security.Principal;
+
+import static com.roskart.dropwizard.jaxws.BasicAuthenticationInterceptor.PRINCIPAL_KEY;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BasicAuthenticationInterceptorTest {
 
@@ -39,21 +41,28 @@ public class BasicAuthenticationInterceptorTest {
     @Mock
     private OutputStream outputStreamMock;
 
-    private BasicAuthentication basicAuthentication = new BasicAuthentication(new BasicAuthenticator(), "TOP_SECRET");
+    private AutoCloseable closeable;
+
+    private final BasicAuthentication basicAuthentication = new BasicAuthentication(new BasicAuthenticator(), "TOP_SECRET");
     // Suppress warning about "hard-coded" password
     @SuppressWarnings("squid:S2068")
     private static final String CORRECT_PASSWORD = "secret";
     private static final String USERNAME = "username";
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
-        MockitoAnnotations.initMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
         when(destinationMock.getBackChannel(any())).thenReturn(conduitMock);
         when(outMessageMock.getContent(OutputStream.class)).thenReturn(outputStreamMock);
     }
 
+    @AfterEach
+    public void releaseMocks() throws Exception {
+        closeable.close();
+    }
+
     @Test
-    public void shouldAuthenticateValidUser() {
+    void shouldAuthenticateValidUser() {
         BasicAuthenticationInterceptor target = new BasicAuthenticationInterceptor();
         target.setAuthenticator(basicAuthentication);
         Message message = createMessageWithUsernameAndPassword(USERNAME, CORRECT_PASSWORD);
@@ -64,7 +73,7 @@ public class BasicAuthenticationInterceptorTest {
     }
 
     @Test
-    public void shouldReturnUnathorizedCodeForInvalidCredentials() {
+    void shouldReturnUnathorizedCodeForInvalidCredentials() {
         BasicAuthenticationInterceptor target = new BasicAuthenticationInterceptor();
         target.setAuthenticator(basicAuthentication);
         Message message = createMessageWithUsernameAndPassword(USERNAME, "foo");
@@ -75,7 +84,7 @@ public class BasicAuthenticationInterceptorTest {
     }
 
     @Test
-    public void shouldNotCrashOnNullPassword() {
+    void shouldNotCrashOnNullPassword() {
         BasicAuthenticationInterceptor target = new BasicAuthenticationInterceptor();
         target.setAuthenticator(basicAuthentication);
         Message message = createMessageWithUsernameAndPassword(USERNAME, null);
@@ -86,7 +95,7 @@ public class BasicAuthenticationInterceptorTest {
     }
 
     @Test
-    public void shouldNotCrashOnNullUser() {
+    void shouldNotCrashOnNullUser() {
         BasicAuthenticationInterceptor target = new BasicAuthenticationInterceptor();
         target.setAuthenticator(basicAuthentication);
         Message message = createMessageWithUsernameAndPassword(null, CORRECT_PASSWORD);

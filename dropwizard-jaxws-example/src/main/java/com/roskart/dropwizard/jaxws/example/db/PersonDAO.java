@@ -1,6 +1,5 @@
 package com.roskart.dropwizard.jaxws.example.db;
 
-import com.google.common.base.Optional;
 import com.roskart.dropwizard.jaxws.example.core.Person;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Session;
@@ -8,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * See dropwizard-example: com.example.helloworld.db.PersonDAO
@@ -33,7 +33,7 @@ public class PersonDAO extends AbstractDAO<Person> {
     }
 
     public Optional<Person> findById(Long id) {
-        return Optional.fromNullable(get(id));
+        return Optional.ofNullable(get(id));
     }
 
     public Person create(Person person) {

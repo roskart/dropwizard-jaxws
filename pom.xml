@@ -6,7 +6,7 @@
 
     <groupId>com.github.roskart.dropwizard-jaxws</groupId>
     <artifactId>dropwizard-jaxws-parent</artifactId>
-    <version>1.2.3</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
     <name>Dropwizard JAX-WS</name>
     <description>
@@ -24,8 +24,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <dropwizard.version>2.0.29</dropwizard.version>
-        <cxf.version>3.5.2</cxf.version>
+        <dropwizard.version>2.1.1</dropwizard.version>
+        <cxf.version>3.5.3</cxf.version>
+        <junit.version>5.9.0</junit.version>
 
     </properties>
 
@@ -145,16 +146,23 @@
     <dependencies>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <artifactId>mockito-core</artifactId>
+            <version>4.7.0</version>
             <scope>test</scope>
         </dependency>
 

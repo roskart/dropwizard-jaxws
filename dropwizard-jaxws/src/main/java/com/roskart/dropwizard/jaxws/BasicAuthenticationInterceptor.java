@@ -75,9 +75,7 @@ public class BasicAuthenticationInterceptor extends AbstractPhaseInterceptor<Mes
             }
 
             // principal will be available through JAX-WS WebServiceContext
-            if (principal.isPresent()) {
-                exchange.getInMessage().put(PRINCIPAL_KEY, principal.get());
-            }
+            principal.ifPresent(o -> exchange.getInMessage().put(PRINCIPAL_KEY, o));
         }
         catch (AuthenticationException ae) {
             sendErrorResponse(message, HttpURLConnection.HTTP_INTERNAL_ERROR);

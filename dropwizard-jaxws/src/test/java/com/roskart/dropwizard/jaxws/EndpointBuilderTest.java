@@ -2,19 +2,20 @@ package com.roskart.dropwizard.jaxws;
 
 import org.apache.cxf.interceptor.Interceptor;
 import org.hibernate.SessionFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.mockito.Mockito.mock;
+
 public class EndpointBuilderTest {
 
     @Test
-    public void buildEndpoint() {
+    void buildEndpoint() {
         Object service = new Object();
         String path = "/foo";
         String publishedUrl = "http://external/url";
@@ -42,10 +43,10 @@ public class EndpointBuilderTest {
         assertThat(builder.publishedEndpointUrl(), equalTo(publishedUrl));
         assertThat(builder.getAuthentication(), equalTo(basicAuth));
         assertThat(builder.getSessionFactory(), equalTo(sessionFactory));
-        assertThat(builder.getCxfInInterceptors(), contains(new Interceptor<?>[]{ inInterceptor, inInterceptor }));
-        assertThat(builder.getCxfInFaultInterceptors(), contains(new Interceptor<?>[]{ inFaultInterceptor, inFaultInterceptor }));
-        assertThat(builder.getCxfOutInterceptors(), contains(new Interceptor<?>[]{ outInterceptor, outInterceptor }));
-        assertThat(builder.getCxfOutFaultInterceptors(), contains(new Interceptor<?>[]{ outFaultInterceptor, outFaultInterceptor }));
+        assertThat(builder.getCxfInInterceptors(), contains(inInterceptor, inInterceptor));
+        assertThat(builder.getCxfInFaultInterceptors(), contains(inFaultInterceptor, inFaultInterceptor));
+        assertThat(builder.getCxfOutInterceptors(), contains(outInterceptor, outInterceptor));
+        assertThat(builder.getCxfOutFaultInterceptors(), contains(outFaultInterceptor, outFaultInterceptor));
         assertThat(builder.getProperties().get("key"), equalTo("value"));
     }
 }

@@ -4,9 +4,9 @@ import ch.qos.logback.classic.Level;
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapBindingFactory;
 import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
@@ -21,9 +21,9 @@ import org.apache.cxf.transport.local.LocalTransportFactory;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.hibernate.SessionFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
@@ -36,29 +36,26 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
-
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 public class JAXWSEnvironmentTest {
 
     private JAXWSEnvironment jaxwsEnvironment;
-    private Invoker mockInvoker = mock(Invoker.class);
-    private TestUtilities testutils = new TestUtilities(JAXWSEnvironmentTest.class);
-    private DummyService service = new DummyService();
+    private final Invoker mockInvoker = mock(Invoker.class);
+    private final TestUtilities testutils = new TestUtilities(JAXWSEnvironmentTest.class);
+    private final DummyService service = new DummyService();
     InstrumentedInvokerFactory mockInvokerBuilder = mock(InstrumentedInvokerFactory.class);
     UnitOfWorkInvokerFactory mockUnitOfWorkInvokerBuilder = mock(UnitOfWorkInvokerFactory.class);
     private int mockBasicAuthInterceptorInvoked;
 
-    private String soapRequest = "test-soap-request.xml";
+    private final String soapRequest = "test-soap-request.xml";
 
     // DummyInterface is used by getClient test
     @WebService
@@ -71,22 +68,25 @@ public class JAXWSEnvironmentTest {
     // TestInterceptor is used for testing CXF interceptors
     class TestInterceptor extends AbstractPhaseInterceptor<Message> {
         private int invocationCount = 0;
+
         public TestInterceptor(String phase) {
             super(phase);
         }
+
         public int getInvocationCount() {
             return this.invocationCount;
         }
+
         @Override
         public void handleMessage(Message message) throws Fault {
             invocationCount++;
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
 
-        ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("org.apache.cxf")).setLevel(Level.INFO);
+        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.apache.cxf")).setLevel(Level.INFO);
 
         jaxwsEnvironment = new JAXWSEnvironment("soap") {
             /*
@@ -119,26 +119,26 @@ public class JAXWSEnvironmentTest {
         testutils.addNamespace("a", "http://jaxws.dropwizard.roskart.com/");
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         jaxwsEnvironment.bus.shutdown(false);
     }
 
     @Test
-    public void buildServlet() {
+    void buildServlet() {
         Object result = jaxwsEnvironment.buildServlet();
         assertThat(result, is(instanceOf(CXFNonSpringServlet.class)));
         assertThat(((CXFNonSpringServlet) result).getBus(), is(instanceOf(Bus.class)));
     }
 
     @Test
-    public void publishEndpoint() throws Exception {
+    void publishEndpoint() throws Exception {
 
         Endpoint e = jaxwsEnvironment.publishEndpoint(new EndpointBuilder("local://path", service));
         assertThat(e, is(notNullValue()));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -149,7 +149,7 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithAnotherEnvironment() throws Exception {
+    void publishEndpointWithAnotherEnvironment() throws Exception {
 
         // creating new runtime environment simulates using separate bundles
         JAXWSEnvironment anotherJaxwsEnvironment = new JAXWSEnvironment("soap2");
@@ -161,7 +161,7 @@ public class JAXWSEnvironmentTest {
         anotherJaxwsEnvironment.publishEndpoint(new EndpointBuilder("local://path", service));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -172,14 +172,14 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithAuthentication() throws Exception {
+    void publishEndpointWithAuthentication() throws Exception {
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
-                    .authentication(mock(BasicAuthentication.class)));
+                        .authentication(mock(BasicAuthentication.class)));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -192,11 +192,11 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithHibernateInvoker() throws Exception {
+    void publishEndpointWithHibernateInvoker() throws Exception {
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
-                    .sessionFactory(mock(SessionFactory.class)));
+                        .sessionFactory(mock(SessionFactory.class)));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
         verify(mockUnitOfWorkInvokerBuilder).create(any(), any(Invoker.class), any(SessionFactory.class));
@@ -210,7 +210,7 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithCxfInterceptors() throws Exception {
+    void publishEndpointWithCxfInterceptors() throws Exception {
 
         TestInterceptor inInterceptor = new TestInterceptor(Phase.UNMARSHAL);
         TestInterceptor inInterceptor2 = new TestInterceptor(Phase.PRE_INVOKE);
@@ -246,7 +246,7 @@ public class JAXWSEnvironmentTest {
 
 
     @Test
-    public void publishEndpointWithMtom() throws Exception {
+    void publishEndpointWithMtom() throws Exception {
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
@@ -266,7 +266,7 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithCustomPublishedUrl() throws Exception {
+    void publishEndpointWithCustomPublishedUrl() throws Exception {
 
         jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
@@ -274,7 +274,7 @@ public class JAXWSEnvironmentTest {
         );
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Server server = testutils.getServerForAddress("local://path");
         AbstractDestination destination = (AbstractDestination) server.getDestination();
@@ -284,20 +284,20 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithProperties() throws Exception {
+    void publishEndpointWithProperties() throws Exception {
 
         HashMap<String, Object> props = new HashMap<>();
         props.put("key", "value");
 
         Endpoint e = jaxwsEnvironment.publishEndpoint(
                 new EndpointBuilder("local://path", service)
-                    .properties(props));
+                        .properties(props));
 
         assertThat(e, is(notNullValue()));
         assertThat(e.getProperties().get("key"), equalTo("value"));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -308,7 +308,7 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithPublishedUrlPrefix() throws WSDLException {
+    void publishEndpointWithPublishedUrlPrefix() throws WSDLException {
 
         jaxwsEnvironment.setPublishedEndpointUrlPrefix("http://external/prefix");
 
@@ -317,7 +317,7 @@ public class JAXWSEnvironmentTest {
         );
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Server server = testutils.getServerForAddress("/path");
         AbstractDestination destination = (AbstractDestination) server.getDestination();
@@ -327,29 +327,26 @@ public class JAXWSEnvironmentTest {
     }
 
     @Test
-    public void publishEndpointWithInvalidArguments() throws Exception {
+    void publishEndpointWithInvalidArguments() throws Exception {
 
         try {
             jaxwsEnvironment.publishEndpoint(new EndpointBuilder("foo", null));
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
         }
 
         try {
             jaxwsEnvironment.publishEndpoint(new EndpointBuilder(null, service));
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
         }
 
         try {
             jaxwsEnvironment.publishEndpoint(new EndpointBuilder("   ", service));
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
         }
     }
 
     @Test
-    public void getClient() {
+    void getClient() {
 
         String address = "http://address";
         Handler handler = mock(Handler.class);
@@ -363,9 +360,9 @@ public class JAXWSEnvironmentTest {
         Client c = ClientProxy.getClient(clientProxy);
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
-        assertThat(((BindingProvider)clientProxy).getBinding() .getHandlerChain().size(), equalTo(0));
+        assertThat(((BindingProvider) clientProxy).getBinding().getHandlerChain().size(), equalTo(0));
 
-        HTTPClientPolicy httpclient = ((HTTPConduit)c.getConduit()).getClient();
+        HTTPClientPolicy httpclient = ((HTTPConduit) c.getConduit()).getClient();
         assertThat(httpclient.getConnectionTimeout(), equalTo(500L));
         assertThat(httpclient.getReceiveTimeout(), equalTo(2000L));
 
@@ -389,14 +386,14 @@ public class JAXWSEnvironmentTest {
         assertThat(c.getEndpoint().getEndpointInfo().getAddress(), equalTo(address));
         assertThat(c.getEndpoint().getService().get("endpoint.class").equals(DummyInterface.class), equalTo(true));
 
-        httpclient = ((HTTPConduit)c.getConduit()).getClient();
+        httpclient = ((HTTPConduit) c.getConduit()).getClient();
         assertThat(httpclient.getConnectionTimeout(), equalTo(123L));
         assertThat(httpclient.getReceiveTimeout(), equalTo(456L));
 
-        assertThat(((BindingProvider)clientProxy).getBinding().getHandlerChain(), contains(handler));
+        assertThat(((BindingProvider) clientProxy).getBinding().getHandlerChain(), contains(handler));
 
-        BindingProvider bp = (BindingProvider)clientProxy;
-        SOAPBinding binding = (SOAPBinding)bp.getBinding();
+        BindingProvider bp = (BindingProvider) clientProxy;
+        SOAPBinding binding = (SOAPBinding) bp.getBinding();
         assertThat(binding.isMTOMEnabled(), equalTo(true));
     }
 }

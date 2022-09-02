@@ -81,14 +81,12 @@ public class EndpointBuilder extends AbstractBuilder {
 
     @Override
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     public final EndpointBuilder cxfInInterceptors(Interceptor<? extends Message>... interceptors) {
         return (EndpointBuilder)super.cxfInInterceptors(interceptors);
     }
 
     @Override
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     public final EndpointBuilder cxfInFaultInterceptors(Interceptor<? extends Message>... interceptors) {
         return (EndpointBuilder)super.cxfInFaultInterceptors(interceptors);
     }
@@ -102,7 +100,6 @@ public class EndpointBuilder extends AbstractBuilder {
 
     @Override
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     public final EndpointBuilder cxfOutFaultInterceptors(Interceptor<? extends Message>... interceptors) {
         return (EndpointBuilder)super.cxfOutFaultInterceptors(interceptors);
     }

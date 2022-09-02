@@ -2,6 +2,7 @@ package com.roskart.dropwizard.jaxws.auth;
 
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
+
 import java.util.Optional;
 
 /**
