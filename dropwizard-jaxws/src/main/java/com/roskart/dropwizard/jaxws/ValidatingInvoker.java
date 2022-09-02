@@ -1,17 +1,17 @@
 package com.roskart.dropwizard.jaxws;
 
-import io.dropwizard.validation.Validated;
 import io.dropwizard.validation.ConstraintViolations;
+import io.dropwizard.validation.Validated;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
+import jakarta.validation.groups.Default;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.FaultMode;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.Invoker;
 
-import javax.validation.Validator;
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.groups.Default;
 import javax.xml.ws.AsyncHandler;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
