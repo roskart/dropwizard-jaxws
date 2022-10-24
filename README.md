@@ -1,7 +1,7 @@
 Dropwizard-JAXWS
 ================
 
-Dropwizard-JAXWS is a [Dropwizard](https://github.com/codahale/dropwizard) Bundle that enables building SOAP web
+Dropwizard-JAXWS is a [Dropwizard](https://www.dropwizard.io/) Bundle that enables building SOAP web
 services and clients using JAX-WS API with Dropwizard.
 
 Features
