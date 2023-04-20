@@ -3,8 +3,8 @@
  */
 package com.roskart.dropwizard.jaxws.example.core;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * See dropwizard-example: com.example.helloworld.core.Person

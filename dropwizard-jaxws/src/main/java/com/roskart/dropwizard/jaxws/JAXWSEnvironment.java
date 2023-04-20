@@ -14,14 +14,14 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServlet;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Endpoint;
-import javax.xml.ws.handler.Handler;
-import javax.xml.ws.soap.SOAPBinding;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.xml.ws.BindingProvider;
+import jakarta.xml.ws.Endpoint;
+import jakarta.xml.ws.handler.Handler;
+import jakarta.xml.ws.soap.SOAPBinding;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -100,7 +100,7 @@ public class JAXWSEnvironment {
     /**
      * Publish JAX-WS server side endpoint. Returns javax.xml.ws.Endpoint to enable further customization.
      */
-    public Endpoint publishEndpoint(EndpointBuilder endpointBuilder) {
+    public EndpointImpl publishEndpoint(EndpointBuilder endpointBuilder) {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
 
         EndpointImpl cxfendpoint = new EndpointImpl(bus, endpointBuilder.getService());

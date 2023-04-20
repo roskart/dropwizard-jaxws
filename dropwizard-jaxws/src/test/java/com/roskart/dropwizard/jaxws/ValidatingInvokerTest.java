@@ -11,12 +11,12 @@ import org.apache.cxf.service.model.OperationInfo;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.validation.Validation;
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.constraints.NotEmpty;
-import javax.xml.ws.AsyncHandler;
-import javax.xml.ws.Response;
+import jakarta.validation.Validation;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.xml.ws.AsyncHandler;
+import jakarta.xml.ws.Response;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

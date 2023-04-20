@@ -8,11 +8,11 @@ import org.apache.cxf.message.FaultMode;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.Invoker;
 
-import javax.validation.Validator;
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.groups.Default;
-import javax.xml.ws.AsyncHandler;
+import jakarta.validation.Validator;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
+import jakarta.validation.groups.Default;
+import jakarta.xml.ws.AsyncHandler;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;

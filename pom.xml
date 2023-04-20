@@ -24,8 +24,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <dropwizard.version>2.0.29</dropwizard.version>
-        <cxf.version>3.5.2</cxf.version>
+        <dropwizard.version>4.0.0</dropwizard.version>
+        <cxf.version>4.0.0</cxf.version>
 
     </properties>
 
@@ -67,6 +67,14 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>Default</id>
+            <name>All apart from Aspose</name>
+            <url>http://repo.maven.apache.org/maven2/</url>
+        </repository>
+    </repositories>
 
     <profiles>
 
@@ -153,8 +161,8 @@
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.0</version>
             <scope>test</scope>
         </dependency>
 

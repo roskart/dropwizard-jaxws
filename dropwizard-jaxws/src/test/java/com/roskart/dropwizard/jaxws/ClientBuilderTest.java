@@ -3,7 +3,7 @@ package com.roskart.dropwizard.jaxws;
 import org.apache.cxf.interceptor.Interceptor;
 import org.junit.Test;
 
-import javax.xml.ws.handler.Handler;
+import jakarta.xml.ws.handler.Handler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
