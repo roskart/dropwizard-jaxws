@@ -68,14 +68,6 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>Default</id>
-            <name>All apart from Aspose</name>
-            <url>http://repo.maven.apache.org/maven2/</url>
-        </repository>
-    </repositories>
-
     <profiles>
 
         <profile>
