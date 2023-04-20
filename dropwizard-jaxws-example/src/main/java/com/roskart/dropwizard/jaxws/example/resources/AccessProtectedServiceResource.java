@@ -2,12 +2,12 @@ package com.roskart.dropwizard.jaxws.example.resources;
 
 import com.roskart.dropwizard.jaxws.example.ws.JavaFirstService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.xml.ws.BindingProvider;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.xml.ws.BindingProvider;
 
 /**
  * Dropwizard resource that invokes JavaFirstService SOAP web service using basic authentication.

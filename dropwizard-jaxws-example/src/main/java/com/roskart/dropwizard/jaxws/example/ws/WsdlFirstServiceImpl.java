@@ -8,9 +8,11 @@ import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.EchoResponse;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.NonBlockingEcho;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;
 
-import javax.jws.HandlerChain;
-import javax.jws.WebService;
-import javax.xml.ws.AsyncHandler;
+import jakarta.jws.HandlerChain;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.AsyncHandler;
+import jakarta.xml.ws.Response;
+
 import java.util.concurrent.Future;
 
 @WebService(endpointInterface = "ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService",
@@ -53,7 +55,7 @@ public class WsdlFirstServiceImpl implements WsdlFirstService {
                 } catch (InterruptedException e) {
                     sar.exception(e);
                 }
-                asyncHandler.handleResponse(sar);
+                asyncHandler.handleResponse((Response<EchoResponse>) sar);
             }
         }.start();
 

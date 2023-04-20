@@ -9,17 +9,19 @@ import com.roskart.dropwizard.jaxws.example.core.Person;
 import com.roskart.dropwizard.jaxws.example.db.PersonDAO;
 import com.roskart.dropwizard.jaxws.example.resources.*;
 import com.roskart.dropwizard.jaxws.example.ws.*;
-import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
 import org.apache.cxf.ext.logging.LoggingOutInterceptor;
+import org.apache.cxf.jaxws.EndpointImpl;
+
 import ws.example.jaxws.dropwizard.roskart.com.mtomservice.MtomService;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;
 
-import javax.xml.ws.Endpoint;
+import jakarta.xml.ws.Endpoint;
 
 public class JaxWsExampleApplication extends Application<JaxWsExampleApplicationConfiguration> {
 
@@ -50,7 +52,7 @@ public class JaxWsExampleApplication extends Application<JaxWsExampleApplication
     public void run(JaxWsExampleApplicationConfiguration jaxWsExampleApplicationConfiguration, Environment environment) {
 
         // Hello world service
-        Endpoint e = jaxWsBundle.publishEndpoint(
+        EndpointImpl e = jaxWsBundle.publishEndpoint(
                 new EndpointBuilder("/simple", new SimpleService()));
 
         // publishEndpoint returns javax.xml.ws.Endpoint to enable further customization.

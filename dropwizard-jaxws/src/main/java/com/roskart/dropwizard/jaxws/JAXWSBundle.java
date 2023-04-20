@@ -1,12 +1,14 @@
 package com.roskart.dropwizard.jaxws;
 
-import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.core.ConfiguredBundle;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+
+import org.apache.cxf.jaxws.EndpointImpl;
 import org.hibernate.SessionFactory;
 
-import javax.xml.ws.Endpoint;
-import javax.xml.ws.handler.Handler;
+import jakarta.xml.ws.Endpoint;
+import jakarta.xml.ws.handler.Handler;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -80,7 +82,7 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      * @param endpointBuilder EndpointBuilder.
      * @return javax.xml.ws.Endpoint
      */
-     public Endpoint publishEndpoint(EndpointBuilder endpointBuilder) {
+     public EndpointImpl publishEndpoint(EndpointBuilder endpointBuilder) {
         checkArgument(endpointBuilder != null, "EndpointBuilder is null");
         return this.jaxwsEnvironment.publishEndpoint(endpointBuilder);
     }
@@ -93,7 +95,7 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public Endpoint publishEndpoint(String path, Object service) {
+    public EndpointImpl publishEndpoint(String path, Object service) {
         return this.publishEndpoint(path, service, null, null);
     }
 
@@ -107,7 +109,7 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public Endpoint publishEndpoint(String path, Object service, SessionFactory sessionFactory) {
+    public EndpointImpl publishEndpoint(String path, Object service, SessionFactory sessionFactory) {
         return this.publishEndpoint(path, service, null, sessionFactory);
     }
 
@@ -121,7 +123,7 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public Endpoint publishEndpoint(String path, Object service, BasicAuthentication authentication) {
+    public EndpointImpl publishEndpoint(String path, Object service, BasicAuthentication authentication) {
         return this.publishEndpoint(path, service, authentication, null);
     }
 
@@ -137,7 +139,7 @@ public class JAXWSBundle<C> implements ConfiguredBundle<C> {
      *
      * @deprecated Use the {@link #publishEndpoint(EndpointBuilder)} publishEndpoint} method instead.
      */
-    public Endpoint publishEndpoint(String path, Object service, BasicAuthentication auth,
+    public EndpointImpl publishEndpoint(String path, Object service, BasicAuthentication auth,
                                 SessionFactory sessionFactory) {
         checkArgument(service != null, "Service is null");
         checkArgument(path != null, "Path is null");

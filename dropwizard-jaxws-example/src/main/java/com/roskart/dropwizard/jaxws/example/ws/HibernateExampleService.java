@@ -5,9 +5,9 @@ import com.roskart.dropwizard.jaxws.example.core.Person;
 import com.roskart.dropwizard.jaxws.example.db.PersonDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
-import javax.validation.Valid;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @WebService

@@ -6,10 +6,10 @@ import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.EchoResponse;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.ObjectFactory;
 import ws.example.jaxws.dropwizard.roskart.com.wsdlfirstservice.WsdlFirstService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * Dropwizard resource that invokes WsdlFirstService SOAP web service.

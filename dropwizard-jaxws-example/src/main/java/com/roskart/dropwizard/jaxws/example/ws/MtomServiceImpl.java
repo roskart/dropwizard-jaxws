@@ -6,10 +6,12 @@ import ws.example.jaxws.dropwizard.roskart.com.mtomservice.Hello;
 import ws.example.jaxws.dropwizard.roskart.com.mtomservice.HelloResponse;
 import ws.example.jaxws.dropwizard.roskart.com.mtomservice.MtomService;
 
-import javax.activation.DataHandler;
-import javax.jws.WebService;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.ws.soap.MTOM;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+
+import jakarta.jws.WebService;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.xml.ws.soap.MTOM;
 import java.io.IOException;
 
 @MTOM // @MTOM annotation is not necessary if you invoke enableMtom on EndopointBuilder
@@ -25,7 +27,7 @@ public class MtomServiceImpl implements MtomService {
             byte[] bin = IOUtils.readBytesFromStream(parameters.getBinary().getInputStream());
             HelloResponse response = new HelloResponse();
             response.setTitle(parameters.getTitle());
-            response.setBinary(new DataHandler(new ByteArrayDataSource(bin,
+            response.setBinary(new DataHandler((DataSource) new ByteArrayDataSource(bin,
                     parameters.getBinary().getContentType())));
             return response;
         }

@@ -3,9 +3,9 @@ package com.roskart.dropwizard.jaxws.example.ws;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 
-import javax.annotation.Resource;
-import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
+import jakarta.annotation.Resource;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.WebServiceContext;
 import java.security.Principal;
 
 @WebService(name="JavaFirstService",
