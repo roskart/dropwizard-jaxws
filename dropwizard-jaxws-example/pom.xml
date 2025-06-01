@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dropwizard-jaxws-parent</artifactId>
         <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-        <version>1.2.3</version>
+        <version>1.2.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.1.210</version>
+            <version>2.2.224</version>
         </dependency>
 
         <dependency>

@@ -6,7 +6,7 @@
 
     <groupId>com.github.roskart.dropwizard-jaxws</groupId>
     <artifactId>dropwizard-jaxws-parent</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
     <packaging>pom</packaging>
     <name>Dropwizard JAX-WS</name>
     <description>
@@ -57,17 +57,6 @@
         <url>https://github.com/roskart/dropwizard-jaxws/issues</url>
     </issueManagement>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <profiles>
 
         <profile>
@@ -117,6 +106,25 @@
                                 <id>attach-javadocs</id>
                                 <goals>
                                     <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>publish-artifacts</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>publish</goal>
                                 </goals>
                             </execution>
                         </executions>

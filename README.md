@@ -146,6 +146,11 @@ Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard
 Changelog
 ---------
 
+### v1.2.4
+
+- Update release procedure, migrate from OSSRH to Maven Central
+- Upgrade H2 dependency in Example project
+
 ### v1.2.3
 
 - Upgraded to CXF 3.5.2 (see Issue #33).
