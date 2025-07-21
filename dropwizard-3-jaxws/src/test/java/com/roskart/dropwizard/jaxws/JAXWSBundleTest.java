@@ -1,11 +1,11 @@
 package com.roskart.dropwizard.jaxws;
 
 import com.codahale.metrics.MetricRegistry;
-import io.dropwizard.Configuration;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
 import io.dropwizard.lifecycle.ServerLifecycleListener;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
 import io.dropwizard.jetty.setup.ServletEnvironment;
 import org.junit.Before;
 import org.junit.Test;
