@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-    <artifactId>dropwizard-jaxws-parent</artifactId>
+    <groupId>com.github.roskart.dropwizard-3-jaxws</groupId>
+    <artifactId>dropwizard-3-jaxws-parent</artifactId>
     <version>1.2.4</version>
     <packaging>pom</packaging>
     <name>Dropwizard JAX-WS</name>
@@ -13,11 +13,11 @@
         Dropwizard-JAXWS is a Dropwizard Bundle that enables building SOAP web services and clients
         using JAX-WS API with Dropwizard.
     </description>
-    <url>https://github.com/roskart/dropwizard-jaxws</url>
+    <url>https://github.com/roskart/dropwizard-3-jaxws</url>
 
     <modules>
-        <module>dropwizard-jaxws</module>
-        <module>dropwizard-jaxws-example</module>
+        <module>dropwizard-3-jaxws</module>
+        <module>dropwizard-3-jaxws-example</module>
     </modules>
 
     <properties>
@@ -47,14 +47,14 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:roskart/dropwizard-jaxws.git</connection>
-        <developerConnection>scm:git:git@github.com:roskart/dropwizard-jaxws.git</developerConnection>
-        <url>git@github.com:roskart/dropwizard-jaxws.git</url>
+        <connection>scm:git:git@github.com:roskart/dropwizard-3-jaxws.git</connection>
+        <developerConnection>scm:git:git@github.com:roskart/dropwizard-3-jaxws.git</developerConnection>
+        <url>git@github.com:roskart/dropwizard-3-jaxws.git</url>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/roskart/dropwizard-jaxws/issues</url>
+        <url>https://github.com/roskart/dropwizard-3-jaxws/issues</url>
     </issueManagement>
 
     <profiles>

@@ -3,20 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dropwizard-jaxws-parent</artifactId>
-        <groupId>com.github.roskart.dropwizard-jaxws</groupId>
+        <artifactId>dropwizard-3-jaxws-parent</artifactId>
+        <groupId>com.github.roskart.dropwizard-3-jaxws</groupId>
         <version>1.2.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dropwizard-jaxws-example</artifactId>
+    <artifactId>dropwizard-3-jaxws-example</artifactId>
     <name>Dropwizard JAX-WS Example Application</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-            <artifactId>dropwizard-jaxws</artifactId>
+            <groupId>com.github.roskart.dropwizard-3-jaxws</groupId>
+            <artifactId>dropwizard-3-jaxws</artifactId>
             <version>${project.version}</version>
         </dependency>
 

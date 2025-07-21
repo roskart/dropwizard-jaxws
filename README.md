@@ -19,12 +19,12 @@ Features
 Using
 -----
 
-To use dropwizard-jaxws in your project, add the following dependency to your `pom.xml`:
+To use dropwizard-3-jaxws in your project, add the following dependency to your `pom.xml`:
 
         <dependency>
-            <groupId>com.github.roskart.dropwizard-jaxws</groupId>
-            <artifactId>dropwizard-jaxws</artifactId>
-            <version>1.2.3</version>
+            <groupId>com.github.roskart.dropwizard-3-jaxws</groupId>
+            <artifactId>dropwizard-3-jaxws</artifactId>
+            <version>1.2.4</version>
         </dependency>
 
 Hello World
@@ -74,7 +74,7 @@ Using HelloWorldSOAP web service client:
 
 Examples
 --------
-Module `dropwizard-jaxws-example` contains Dropwizard application (`JaxWsExampleApplication`) with the following SOAP
+Module `dropwizard-3-jaxws-example` contains Dropwizard application (`JaxWsExampleApplication`) with the following SOAP
 web services and RESTful resources:
 
 * **SimpleService**: A minimal 'hello world' example.
@@ -110,13 +110,13 @@ implementation with MTOM enabled.
 
 ### Running the examples:
 
-After cloning the repository, go to the dropwizard-jaxws root folder and run:
+After cloning the repository, go to the dropwizard-3-jaxws root folder and run:
 
         mvn package
 
 To run the example service:
 
-        java -jar dropwizard-jaxws-example\target\dropwizard-jaxws-example-1.2.3.jar server dropwizard-jaxws-example\config.yaml
+        java -jar dropwizard-3-jaxws-example\target\dropwizard-3-jaxws-example-1.2.3.jar server dropwizard-3-jaxws-example\config.yaml
 
 Notes
 -----
@@ -130,7 +130,7 @@ configuration:
             <resource>META-INF/cxf/bus-extensions.txt</resource>
         </transformer>
 
-For example on building fat jar, see `dropwizard-jaxws-example/pom.xml`.
+For example on building fat jar, see `dropwizard-3-jaxws-example/pom.xml`.
 
 When using Gradle and a recent version of [shadowJar](https://github.com/johnrengelman/shadow) use the following snippet:
 
@@ -141,7 +141,7 @@ When using Gradle and a recent version of [shadowJar](https://github.com/johnren
     
 License
 -------
-Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard-jaxws/blob/master/LICENSE).
+Apache Software License 2.0, see [LICENSE](https://github.com/roskart/dropwizard-3-jaxws/blob/master/LICENSE).
 
 Changelog
 ---------
