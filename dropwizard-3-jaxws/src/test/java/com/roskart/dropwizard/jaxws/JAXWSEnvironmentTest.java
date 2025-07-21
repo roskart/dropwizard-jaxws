@@ -138,7 +138,7 @@ public class JAXWSEnvironmentTest {
         assertThat(e, is(notNullValue()));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -161,7 +161,7 @@ public class JAXWSEnvironmentTest {
         anotherJaxwsEnvironment.publishEndpoint(new EndpointBuilder("local://path", service));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -179,7 +179,7 @@ public class JAXWSEnvironmentTest {
                     .authentication(mock(BasicAuthentication.class)));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -274,7 +274,7 @@ public class JAXWSEnvironmentTest {
         );
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Server server = testutils.getServerForAddress("local://path");
         AbstractDestination destination = (AbstractDestination) server.getDestination();
@@ -297,7 +297,7 @@ public class JAXWSEnvironmentTest {
         assertThat(e.getProperties().get("key"), equalTo("value"));
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Node soapResponse = testutils.invoke("local://path",
                 LocalTransportFactory.TRANSPORT_ID, soapRequest);
@@ -317,7 +317,7 @@ public class JAXWSEnvironmentTest {
         );
 
         verify(mockInvokerBuilder).create(any(), any(Invoker.class));
-        verifyZeroInteractions(mockUnitOfWorkInvokerBuilder);
+        verifyNoInteractions(mockUnitOfWorkInvokerBuilder);
 
         Server server = testutils.getServerForAddress("/path");
         AbstractDestination destination = (AbstractDestination) server.getDestination();

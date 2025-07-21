@@ -102,9 +102,9 @@ public class UnitOfWorkInvokerFactoryTest {
         Object result = invoker.invoke(exchange, null);
         assertEquals("foo return", result);
 
-        verifyZeroInteractions(sessionFactory);
-        verifyZeroInteractions(session);
-        verifyZeroInteractions(transaction);
+        verifyNoInteractions(sessionFactory);
+        verifyNoInteractions(session);
+        verifyNoInteractions(transaction);
     }
 
     @Test
