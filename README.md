@@ -1,3 +1,6 @@
+>⚠️ NOTE: This repository is no longer actively maintained. A fork with updated dependencies is available here: https://github.com/kiwiproject/dropwizard-jakarta-xml-ws
+
+
 Dropwizard-JAXWS
 ================
 
